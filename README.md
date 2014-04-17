@@ -1,5 +1,5 @@
 ### What is this?
-This repository is an trimmed down (contains only technical information, no projects/news/links) version of the RollerCoaster Tycoon Technical Depot. (which is no longer live)
+This repository is a trimmed down (contains only technical information, no projects/news/links) version of the RollerCoaster Tycoon Technical Depot. (which is no longer live)
 
 In more detail, this repository contains file formats, checksum methods, and encoding/encryption methods used in Roller Coaster Tycoon 1, 2 and 3, as well as Locomotion.
 
