@@ -1,0 +1,96 @@
+<HTML> 
+<HEAD><TITLE>TD4 file format</TITLE></HEAD>
+<BODY BGCOLOR="#ffffff" BACKGROUND="bkground.jpg">
+
+<H1 ALIGN="Center">CSS1.DAT File Format</H1>
+<H5> <BR><A HREF="index.html">Back to RCT home</A> </H5>
+
+<P> The css1.dat file stores the sound effects used in the game. The
+information here is based on information provided by Jonathon Wilson. The file
+is a modified WAV List file. The header is as follows:</P>
+<P><FONT COLOR="#008040">dword</FONT> : <FONT
+COLOR="#FF0000">NumberOfSounds</FONT><BR>
+<FONT COLOR="#008040">array</FONT>[1..NumberOfSounds] <FONT COLOR="#008040">of
+dword</FONT> : <FONT COLOR="#FF0000">OffsetList</FONT> // list of offsets
+within the file for the beginning of the data for each sound.<BR>
+<FONT COLOR="#008040">dword</FONT> : <FONT COLOR="#FF0000">DataSize</FONT> //
+size of sound data</P>
+<P>This is followed by a &quot;usual&quot; wav header:</P>
+<P><CODE>struct<BR>
+{<BR>
+<FONT COLOR="#008040">WORD</FONT> <FONT COLOR="#FF0000">wFormatTag</FONT>; //
+Format category<BR>
+<FONT COLOR="#008040"> WORD</FONT> <FONT COLOR="#FF0000">wChannels</FONT>; //
+Number of channels<BR>
+<FONT COLOR="#008040">DWORD</FONT> <FONT
+COLOR="#FF0000">dwSamplesPerSec</FONT>; // Sampling rate<BR>
+<FONT COLOR="#008040"> DWORD</FONT> <FONT
+COLOR="#FF0000">dwAvgBytesPerSec</FONT>; // For buffer estimation <BR>
+<FONT COLOR="#008040">WORD</FONT> <FONT COLOR="#FF0000">wBlockAlign</FONT>; //
+Data block size<BR>
+<FONT COLOR="#008040"> WORD</FONT> <FONT COLOR="#FF0000">wBitsPerSample</FONT>;
+// bit size of each sample <BR>
+}</CODE></P>
+<P>The <FONT COLOR="#FF0000">wFormatTag</FONT> is &quot;1&quot; to indicate PCM
+- no compression<BR>
+<FONT COLOR="#FF0000"> wChannels</FONT> is &quot;1&quot; to indicate mono<BR>
+<FONT COLOR="#FF0000">dwSamplesPerSec</FONT> is &quot;22050&quot;<BR>
+<FONT COLOR="#FF0000">dwAvgBytesPerSec</FONT> is &quot;44100&quot;<BR>
+<FONT COLOR="#FF0000"> wBlockAlign</FONT> is &quot;2&quot;<BR>
+<FONT COLOR="#FF0000">wBitsPerSample</FONT> is &quot;16&quot;</P>
+<P>Thus each DataChunk consists of wav data in PCM, 22050, mono, 16 bit format.
+</P>
+<P>The sounds are in the following order: </P>
+<DL>
+<DD>lift 1</DD>
+<DD>straight running</DD>
+<DD>lift 2</DD>
+<DD>scream 1</DD>
+<DD>click 1</DD>
+<DD>click 2</DD>
+<DD>place item</DD>
+<DD>scream 2</DD>
+<DD>scream 3</DD>
+<DD>scream 4</DD>
+<DD>scream 5</DD>
+<DD>scream 6</DD>
+<DD>lift 3</DD>
+<DD>cash sound</DD>
+<DD>crash</DD>
+<DD>laying out water</DD>
+<DD>water 1</DD>
+<DD>water 2</DD>
+<DD>train whistle</DD>
+<DD>train chugging</DD>
+<DD>water splash</DD>
+<DD>hammering</DD>
+<DD>ride launch 1</DD>
+<DD>ride launch 2</DD>
+<DD>cough 1</DD>
+<DD>cough 2</DD>
+<DD>cough 3</DD>
+<DD>cough 4</DD>
+<DD>rain 1</DD>
+<DD>thunder 1</DD>
+<DD> thunder 2</DD>
+<DD>rain 2</DD>
+<DD>rain 3</DD>
+<DD>tink 1</DD>
+<DD>tink 2</DD>
+<DD>scream 7</DD>
+<DD>toilet flush</DD>
+<DD>click 3</DD>
+<DD>quack</DD>
+<DD>message sound</DD>
+<DD>dialog box sound</DD>
+<DD>person 1</DD>
+<DD>person 2</DD>
+<DD>person 3</DD>
+<DD>clapping</DD>
+<DD>haunted house 1</DD>
+<DD>haunted house 2</DD>
+</DL>
+<P></P>
+<P> </P>
+</BODY>
+</HTML>

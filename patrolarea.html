@@ -1,0 +1,31 @@
+<HTML>
+<HEAD><TITLE>Patrol Areas</TITLE></HEAD>
+<BODY BACKGROUND="bkground.jpg">
+
+<P><A HREF="SV4.html">Back to SV4 documentation</A> Thanks to Dave Ryalls for
+the following information: </P>
+<H1 ALIGN="Center"> Patrol Area Map </H1>
+<P>1F06AA..1F42A9 is the Patrol Area Map.</P>
+<P> In the game, the park staff can be made to work in specified patrol
+areas.<SPAN STYLE="mso-spacerun: yes"> </SPAN>Each individual Patrol Area
+&#147;blueprint&#148; segment that can be laid down is an area of 4 by 4 tiles.
+Given that the map is stored as 128 by 128 tiles, the patrol area for each
+staff member is a maximum of 32 by 32 blueprint segments. For each member of
+staff, 128 bytes in this memory area are allocated to flag whether or not each
+of the 32 by 32 segments is in that staff member&#146;s patrol area. Each bit
+in the 128 bytes represents one of the segments, with 32 bits representing one
+row of blueprint segments, and 32 columns of 32 bits.. The memory is allocated
+whether or not the staff member is given a patrol area. There are 120 sets of
+128 bytes. The last 4 sets are used to store the combined patrol areas for each
+of the staff types. Here, a bit is set if one or more staff member has the
+segment in his patrol area. The first set of 128 bytes (at address 1F40AA) is
+the patrol area for all the handymen, the second for all engineers, the third
+for all security and the last for all entertainers. (Note that this structure
+places a limitation on the game. It is impossible to employ more than 116 park
+staff!) Following this (from address 1F42AA), there are 116 bytes used as flags
+to indicate which of the 116 sets of 128 bytes are in use. For each byte: Bit 0
+is set if there is a member of staff associated with the set of 128 bytes Bit 1
+is set if the member of staff has been assigned a Patrol Area. </P>
+</BODY>
+</HTML>
+

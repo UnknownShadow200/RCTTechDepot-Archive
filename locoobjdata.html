@@ -1,0 +1,515 @@
+<HTML>
+<HEAD><TITLE>Object DAT files</TITLE></HEAD>
+<BODY BGCOLOR="#ffffff" BACKGROUND="bkground.jpg">
+<H1 ALIGN="Center">LOCOMOTION OBJECT DAT FILES</H1>
+<H5><A HREF="index.html">Back to RCT home</A></H5>
+<P ALIGN="CENTER"><FONT COLOR="#FF0000">Last Updated September 19, 2004 </FONT></P>
+
+<P>
+The visual items in Locomotion are presumed stored in the g1x.dat files in the data directory
+and as individual dat files in the objdata directory.
+<P>
+The Locomotion dat files are similar in many respects to the dat files of RCT2. The dat files begin with a sixteen byte &quot;DAT File Header&quot;. The first four
+bytes are flags. The next eight bytes are the ASCII characters of the file
+name (padded with trailing spaces as needed). The next four bytes are a checksum.
+The DAT File Header is followed by an encoded data chunk. It is the same
+type of encoding as described on the SV6/SC6 page. (The first byte specifies
+the type of encoding; the next four bytes are the size.) The remainder of
+the description here is based on the decoded file. This is a &quot;work in progress&quot;!
+I am using the following model for the Dat file structure:<BR>
+<TABLE BORDER CELLPADDING="2">
+  <TR><TD><B>DAT File Header</B></TD></TR>
+  <TR><TD><B><A HREF="LocoObjdata.html#ObjectHeader">Object Header</A></B></TD></TR>
+  <TR><TD><A HREF="LocoObjdata.html#StringTables"><B>String Table(s)</B></A></TD></TR>
+  <TR><TD><B><A HREF="LocoObjdata.html#GroupInfo">Group Info</A></B></TD></TR>
+  <TR><TD>Optional</TD></TR>
+  <TR><TD><B><A HREF="LocoObjdata.html#ImageDirectory">Image Directory</A></B></TD></TR>
+  <TR><TD>Graphics Data</TD></TR>
+</TABLE>
+<P>
+Presumably, every object has a DAT File Header, Object Header (different
+for each object type) and a String Table.
+</p>
+<P>
+<B>DAT File Header:</B> The high two bits of the first byte of the
+<FONT COLOR="#0000ff">Flags</FONT> is used to determine if this is a standard
+(original=&quot;10&quot;,) or (possibly) custom object (bits =&quot;00&quot;). The lower six bits of the first byte determine the &quot;Type&quot; of the object
+as described below. The remainder of <FONT COLOR="#0000ff">Flags</FONT> can
+be ignored.The last byte of Flags is 0x11 for original Locomotion files.</p>
+<P>
+<FONT COLOR="#0000ff">Flags : longword <BR>
+filename : 8 bytes <BR>
+checksum : longword</FONT>
+<P>
+The Checksum is calculated by starting with the value 0xF369A75B. Read one
+byte at a time from the decoded file. Start with the first byte of the file,
+then skip the next three bytes. Then read the eight bytes of the Filename.
+Skip the four bytes of the checksum (you're calculating it now!). Then process
+each byte of the remainder of the (decoded) file.
+<P>
+Each byte is processed by XOR'ing it with the low byte of CheckSum. Then
+CheckSum is rotated left by <B>eleven</B> bits.<P>
+<TABLE BORDER CELLPADDING="2">
+  <TR>
+    <TD>Object<BR>
+      Type</TD>
+    <TD>Description</TD>
+    <TD>Obj Header<BR>
+      Size</TD>
+    <TD>String Tables</TD>
+    <TD>Group(s)</TD>
+    <TD>&quot;Optional&quot;</TD>
+    <TD>Images</TD>
+    <td>Example</td>
+  </TR>
+    <TR>
+    <TD><P ALIGN="center">0x00</TD>
+    <TD>interface (button images)</TD>
+    <TD>0x18</TD>
+    <TD>1</TD>
+    <TD>No</TD>
+    <TD>No</TD>
+    <TD>Yes</TD>
+    <td>INTERDEF.dat</td>
+    </TR>
+  <TR>
+        <td><p align="center">0x01</p></td>
+        <td>sounds</td>
+        <td>0x0C</td>
+        <td>1</td>
+        <td>No</td>
+        <td>?</td>
+        <td>No-has &quot;sounds&quot;?</td>
+        <td>SNDTR1.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x02</p></td>
+        <td>currency</td>
+        <td>0x0C</td>
+        <td>3</td>
+        <td>No</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>CURRDOLL.dat</td>
+  </TR>
+  <TR>
+        <td> <p align="center">0x03</p></td>
+        <td>exhaust/spark/steam</td>
+        <td>0x28</td>
+        <td>1</td>
+        <td>No</td>
+        <td>?</td>
+        <td>?</td>
+        <td>STEAM.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x04</p></td>
+        <td>rocks (vertical faces)</td>
+        <td>0x06</td>
+        <td>1</td>
+        <td>No</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>LSROCK.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x05</p></td>
+        <td>water</td>
+        <td>0x0E</td>
+        <td>1</td>
+        <td>No</td>
+        <td>?</td>
+        <td>?</td>
+        <td>WATER1.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x06</p></td>
+        <td>grass/rock/sand</td>
+        <td>0x1E</td>
+        <td>1</td>
+        <td>Yes</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>GRASS1.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x07</p></td>
+        <td>town names</td>
+        <td>0x1A</td>
+        <td>1</td>
+        <td>No</td>
+        <td>?</td>
+        <td>?</td>
+        <td>ATOWNNAM.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x08</p></td>
+        <td>resources (eg grain, coal)</td>
+        <td>0x1F</td>
+        <td>4</td>
+        <td>No</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>COAL.dat</td>
+  </TR>
+  <TR>
+        <td> <p align="center">0x09</p></td>
+        <td>fence/wall</td>
+        <td>0x0A</td>
+        <td>1</td>
+        <td>No</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>FENCE1.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x0A</p></td>
+        <td>train signals</td>
+        <td>0x1E</td>
+        <td>2</td>
+        <td>No</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>SIGS.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x0B</p></td>
+        <td>level crossing signals</td>
+        <td>0x12</td>
+        <td>1</td>
+        <td>No</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>LCROSS1.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x0C</p></td>
+        <td>street lights</td>
+        <td>0x0C</td>
+        <td>1</td>
+        <td>No</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>SLIGHT1.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x0D</p></td>
+        <td>tunnel</td>
+        <td>0x06</td>
+        <td>1</td>
+        <td>No</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>TUNNEL1.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x0E</p></td>
+        <td>bridge</td>
+        <td>0x2C</td>
+        <td>1</td>
+        <td>No</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>BRDGGIRD.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x0F</p></td>
+        <td>train station</td>
+        <td>0AE</td>
+        <td>1</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>TRSTAT1.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x10</p></td>
+        <td>track extras(3rd rail, electric)</td>
+        <td>0x12</td>
+        <td>1</td>
+        <td>No</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>TREX3RL.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x11</p></td>
+        <td>track (narrow/standard)</td>
+        <td>0x36</td>
+        <td>1</td>
+        <td>Yes</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>trackst.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x12</p></td>
+        <td>road station</td>
+        <td>0x6E</td>
+        <td>1</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>RDSTAT1.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x13</p></td>
+        <td>road extras (overhead electric)</td>
+        <td>0x12</td>
+        <td>1</td>
+        <td>No</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>RDEXCAT1.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x14</p></td>
+        <td>road</td>
+        <td>0x30</td>
+        <td>1</td>
+        <td>Yes</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>ROADONE.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x15</p></td>
+        <td>airport</td>
+        <td>0xBA</td>
+        <td>1</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>AIRPORT1.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x16</p></td>
+        <td>dock</td>
+        <td>0x28</td>
+        <td>1</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>SHIPST1.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x17</p></td>
+        <td>vehicles</td>
+        <td>0x15E</td>
+        <td>1</td>
+        <td>Yes-after addtl data</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>BALDWIN1.dat</td>
+  </TR>
+  <TR>
+        <TD><P align="center">0x18</TD>
+    <TD>trees</TD>
+    <TD>0x4C</TD>
+    <TD>1</TD>
+    <TD>No</TD>
+    <TD>No</TD>
+    <TD>Yes</TD>
+        <td>BEECH.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x19</p></td>
+        <td>snow</td>
+        <td>0x06</td>
+        <td>1</td>
+        <td>No</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>SNOW.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x1A</p></td>
+        <td>climate</td>
+        <td>0x0A</td>
+        <td>1</td>
+        <td>No</td>
+        <td>No</td>
+        <td>No</td>
+        <td>CLIM1.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x1B</p></td>
+        <td>hill shapes</td>
+        <td>0x0E</td>
+        <td>1</td>
+        <td>No</td>
+        <td>?</td>
+        <td>?</td>
+        <td>HS1.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x1C</p></td>
+        <td>buildings</td>
+        <td>0xBE</td>
+        <td>1</td>
+        <td>Yes-after addtl data</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>BLDALP1.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x1D</p></td>
+        <td>scaffolding</td>
+        <td>0x12</td>
+        <td>1</td>
+        <td>No</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>SCAFDEF.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x1E</p></td>
+        <td>industry(factory/farm, etc)</td>
+        <td>0xF4</td>
+        <td>8</td>
+        <td>Yes-after addtl data</td>
+        <td>?</td>
+        <td>?</td>
+        <td>FARM.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x1F</p></td>
+        <td>region (US/UK/ALP)</td>
+        <td>0x12</td>
+        <td>1</td>
+        <td>Yes, and &quot;0xFF&quot; at end of group data</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>REGUS.dat</td>
+  </TR>
+  <TR>
+        <td><p align="center">0x20</p></td>
+        <td>competitors</td>
+        <td>0x39</td>
+        <td>2</td>
+        <td>No</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>COMP1.dat</td>
+  </TR>
+  <TR>
+    <TD><P ALIGN="Center">0x21</TD>
+    <TD>Scenario text</TD>
+    <TD>0x06</TD>
+    <TD>2</TD>
+    <TD>No</TD>
+    <TD>No</TD>
+    <TD>No</TD>
+     <td>STEX000.dat</td>
+  </TR>
+</TABLE>
+<P>
+<B><A NAME="ObjectHeader">Object Header</A>:</B> Following the DAT File Header
+is a &quot;Object Header&quot; which is a different structure (and size) for each object
+type. None of the Locomotion object headers have been determined yet.
+<P>
+&nbsp;<P>
+  <HR>
+<P>
+<B><A NAME="StringTables">String Table(s)</A></B>: Folowing the Object Header
+is a string table containing text in different languages.Each string begins
+with a byte to specify the language.&nbsp;The&nbsp;following&nbsp;table&nbsp;is&nbsp;the&nbsp;definitions&nbsp;used&nbsp;in&nbsp;RCT2 <BR>
+<TABLE BORDER CELLPADDING="2">
+  <TR>
+    <TD>Code</TD>
+    <TD>Language</TD>
+        <td>Used in Locomotion</td>
+  </TR>
+  <TR>
+    <TD>0</TD>
+    <TD>British English</TD>
+        <td>Yes</td>
+  </TR>
+  <TR>
+    <TD>1</TD>
+    <TD>American English</TD>
+        <td>Yes</td>
+  </TR>
+  <TR>
+    <TD>2</TD>
+    <TD>French</TD>
+        <td>Yes</td>
+  </TR>
+  <TR>
+    <TD>3</TD>
+    <TD>German</TD>
+        <td>Yes</td>
+  </TR>
+  <TR>
+    <TD>4</TD>
+    <TD>Spanish</TD>
+        <td>Yes</td>
+  </TR>
+  <TR>
+    <TD>5</TD>
+    <TD>Italian</TD>
+        <td>Yes</td>
+  </TR>
+  <TR>
+    <TD>6</TD>
+    <TD>Dutch</TD>
+        <td>No</td>
+  </TR>
+  <TR>
+    <TD>7</TD>
+    <TD>Swedish</TD>
+        <td>No</td>
+  </TR>
+  <TR>
+    <TD>9</TD>
+    <TD>Korean?</TD>
+        <td>Yes</td>
+  </TR>
+  <TR>
+    <TD>10</TD>
+    <TD>Chinese</TD>
+        <td>No</td>
+  </TR>
+  <TR>
+    <TD>11</TD>
+    <TD>Chinese</TD>
+        <td>Yes</td>
+  </TR>
+  <TR>
+    <TD>13</TD>
+    <TD>Portugese</TD>
+        <td>No</td>
+  </TR>
+</TABLE>
+<P>
+The string immediately follows that byte and is null terminated. An 0xFF
+for the Language code indicates the end of the strings.
+<P>
+<B><A NAME="GroupInfo">Group Info</A></B>: a sixteen byte structure. There
+is a four byte value. This is followed by an eight byte string indicating
+which scenery group file this item belongs to (if any). That is followed
+by a 4-byte value. There are often several of these groups. Read the next long word in the file - if it is less than 0x22 then it is another group structure, otherwise, it is part of the image directory.
+<P>
+<FONT COLOR="#0000ff">Flag : longword <BR>
+FileName : 8 bytes <BR>
+Checksum: longword = 0</FONT>
+<P>
+<B><A NAME="ImageDirectory">Image directory</A></B>: First is a 4-byte value
+which specifies how many images are in the file. Then a 4-byte value which
+specifies the length of the scan line graphic data (starting after the image
+directory). Then there is a sixteen byte entry for each image. It uses the
+same format as the csg1i.dat file of RCT1.
+<P>
+<FONT COLOR="#0000ff">TGraphicRecord = record <BR>
+StartAddress : longword; <BR>
+Width, Height, Xoffset, Yoffset : smallint; // signed two byte variables
+<BR>
+Flags : word; <BR>
+unused : word // to pad the structure to 16 bytes <BR>
+end;</FONT>
+<P>
+StartAddress points to the start of the scan line index in the file. It is
+an offset rather than an absolute address - the first scan line index has
+a StartAddress of 00000000.
+<P>
+</BODY></HTML>

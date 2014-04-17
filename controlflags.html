@@ -1,0 +1,81 @@
+<HTML>
+<HEAD><TITLE>Control Flags</TITLE></HEAD>
+<BODY BGCOLOR="#ffffff" BACKGROUND="bkground.jpg">
+<H1 ALIGN="Center">Departure Control Flags</H1>
+
+<P>
+This byte contains bit flags. The most significant bit will be called "bit
+7" and the least significant bit will be called "bit 0".
+<TABLE BORDER CELLPADDING="2">
+  <TR>
+    <TD>Bit</TD>
+    <TD>if set...</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN="Center">7</TD>
+    <TD>use maximum time</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN="Center">6</TD>
+    <TD>use minimum time</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN="Center">5</TD>
+    <TD>sync with adjacent station</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN="Center">
+      4</TD>
+    <TD>leave if another train arrives at station</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN="Center">
+      3</TD>
+    <TD>wait for load</TD>
+  </TR>
+</TABLE>
+<P>
+<P>
+Bits 2, 1 and 0 indicate the following loading conditions:
+<TABLE BORDER CELLPADDING="2">
+  <TR>
+    <TD>bit 2</TD>
+    <TD>bit 1</TD>
+    <TD>bit 0</TD>
+    <TD>wait for...</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN="Center">0</TD>
+    <TD><P ALIGN="Center">0</TD>
+    <TD><P ALIGN="Center">0</TD>
+    <TD>1/4 load</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN="Center">0</TD>
+    <TD><P ALIGN="Center">0</TD>
+    <TD><P ALIGN="Center">1</TD>
+    <TD>1/2 load</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN="Center">0</TD>
+    <TD><P ALIGN="Center">1</TD>
+    <TD><P ALIGN="Center">0</TD>
+    <TD>3/4 load</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN="Center">0</TD>
+    <TD><P ALIGN="Center">1</TD>
+    <TD><P ALIGN="Center">1</TD>
+    <TD>full load</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN="Center">1</TD>
+    <TD><P ALIGN="Center">0</TD>
+    <TD><P ALIGN="Center">0</TD>
+    <TD>any load</TD>
+  </TR>
+</TABLE>
+<P>
+other combinations are not used
+<P>
+</BODY></HTML>

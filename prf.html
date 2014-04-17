@@ -1,0 +1,119 @@
+<HTML>
+<HEAD><TITLE>PRF file format</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff" BACKGROUND="bkground.jpg">
+<H1 ALIGN="Center">PRF File Format</H1>
+<P ALIGN="CENTER">
+<FONT COLOR="#FF0000" SIZE="+2"><B>Last updated Feb 23, 2005</B></FONT>
+<H5><BR><A HREF="index.html">Back to RCT home</A></H5>
+
+<P>
+The PRF (profile) file stores RCT3 campaign information. The file begins with a header which consists of text based descriptions of data structures used in the game. Most of them do not apply to profile files, but they provide some insight to the remainder of the game!</p>
+<div align="left">
+    <table border="1" width="25%" bgcolor="white">
+        <tr><td width="660">Structures Header</td></tr>
+        <tr><td width="660">Prelim Info</td></tr>
+        <tr><td width="660">ManagedPlayerProfile</td></tr>
+    </table>
+</div>
+<h3>
+Structures Header</h3>
+<P>
+This section describes various data structures used in the game. It begins with a 4 byte value which specifies the number of structure definitions. You will need to loop through the structure definitions. Each structure definition begins with a &quot;Pascal style&quot; string (which is the name of the structure) followed by a four byte value which specifies the number of primary entries in the structure definition. The &quot;Pascal style&quot; strings used in the file begin with a two byte value which specifies the size of the string (not counting those two bytes themselves). For example, the string &quot;Hello&quot; would be represented as:</p>
+<P>
+05 00 48 65 6C 6C 6F</p>
+<P>
+After reading the structure name and number of primary entries, you then need to loop through a (recursive) routine to read the entries. Each entry begins with 2&nbsp;Pascal style strings. The first string is the name of the enty. The second string is the data type of that entry. These strings are followed by two 4-byte values. In most cases, the first value specifies the size (in bytes) of the named entry. However, if the data type is: &quot;<b>array</b>&quot;, &quot;<b>list</b>&quot; or &quot;<b>struct</b>&quot;, then the second value specifies how many sub-entries there are for this entry. For these three data types, you will need to run through another level of a loop with the same routine. That is why this routine needs to be designed for recurssion. The entries can be five or more levels deep.</p>
+<P>
+Note: entries with the data type &quot;string&quot; refer to a slightly different style of string structure with wide (two byte) characters. The length of a string entry in a data structure cannot be determined until the actual structure is interpreted at run time. (And the length contained with the structure definition will be zero.)</p>
+<P>
+For an example of the structures header extracted from a file, go to <a href="TRKheaderdefs.html">TRKheaderdefs.html</a></p>
+<h3>
+Prelim Info</h3>
+<P>
+This is a sixteen byte structure which appears to consist of four&nbsp;- four byte (32 bit) values. The meaning of this entire structure is yet to be determined.</p>
+<h3>ManagedPlayerProfile</h3>
+<P>
+This structure is described within the structures header. The description is repeated here in a readable format:</p>
+<P>
+&nbsp;</p>
+<table border="1">
+    <tr>
+        <td width="512" colspan="3">
+            <p>ManagedPlayerProfile</p>
+        </td>
+        <td width="660">3</td>
+    </tr>
+    <tr>
+        <td width="660" colspan="2">
+            <p>CurrentScenario</p>
+        </td>
+        <td width="660">int32</td>
+        <td width="660">4</td>
+    </tr>
+    <tr>
+        <td width="660" colspan="2">
+            <p>PlayerName</p>
+        </td>
+        <td width="660">string</td>
+        <td width="660">&nbsp;</td>
+    </tr>
+    <tr>
+        <td width="660" colspan="2">
+            <p>ScenarioData</p>
+        </td>
+        <td width="660">array</td>
+        <td width="660">2</td>
+    </tr>
+    <tr>
+        <td width="131">
+            <p>&nbsp;</p>
+        </td>
+        <td width="131">
+            <p>LastSaveName</p>
+        </td>
+        <td width="660">string</td>
+        <td width="660">&nbsp;</td>
+    </tr>
+    <tr>
+        <td width="157">
+            <p>&nbsp;</p>
+        </td>
+        <td width="157">
+            <p>Status</p>
+        </td>
+        <td width="660">int32</td>
+        <td width="660">4</td>
+    </tr>
+</table>
+
+<P>You can read this structure as follows:</p>
+<P>1) read a 32bit value which is the &quot;CurrentScenario&quot;</p>
+<P>2) read the &quot;PlayerName&quot; which is a WideString. WideString's begin with a 32 bit value which specifies how many bytes comprise the string (after the 32 bit value). Next is a 32 bit value corresponding to a (nonstandard) Byte Order Mark which has the value &quot;EFEFEFEF&quot; and can be skipped. This is followed by 16 bit wide characters. The first byte is the ASCII character and the second byte is just zero.</p>
+<P>3) The next (and final) element is an array. An RCT3 array has a prefix of two 32 bit values. The first value specifies the size of the entire array structure in bytes. The second value is the index&nbsp;size&nbsp;of the array. For PRF files, the size is eighteen. You will need to loop through the array.</p>
+<P>4) Each array entry consists of two items. The first item is the &quot;LastSaveName&quot; which is a WideString. The second item is the &quot;Staus&quot; for that scenario. <br>Known values for &quot;Status&quot; are:</p>
+<div align="left">
+<table border="1" width="40%">
+    <tr>
+        <td>0</td>
+        <td width="445">Locked</td>
+    </tr>
+    <tr>
+        <td width="445">1</td>
+        <td width="445">Unlocked - no goals met</td>
+    </tr>
+    <tr>
+        <td width="445">3</td>
+        <td width="445">Apprentice goal met</td>
+    </tr>
+    <tr>
+        <td width="445">4</td>
+        <td width="445">Entrepeneur goal met</td>
+    </tr>
+    <tr>
+        <td width="445">5</td>
+        <td width="445">Tycoon goal met</td>
+    </tr>
+</table>
+</div>
+</BODY></HTML>

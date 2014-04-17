@@ -1,0 +1,1465 @@
+<HTML>
+<HEAD>
+<TITLE>SV4 file format</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#ffffff" BACKGROUND="bkground.jpg">
+<H1 ALIGN="Center"> SV4 FILE FORMAT </H1>
+<H5> <A HREF="index.html">Back to RCT home</A> </H5>
+<P> The SV4 file stores the save game information. There is incomplete
+information about this file format. This page will be updated as information
+becomes available. The game saves SV4 files with <A HREF="RLE.html">RLE</A>
+encoding. The decoded files have 2,065,676 bytes (0 .. 1F850B in hexadecimal). 
+</P>
+<P> 000000..000001 - game time month (divide by 8 for years) </P>
+<P> 000002..000003 - game time day, counts in steps of 4. when this 16 bit
+value cycles, a month will have passed. </P>
+<P> 000004..000007 - game time counter, counts in steps of 1. does not begin at
+zero when scenario starts </P>
+<P> 000008..00000B, <BR>
+00000C..00000F - contain psuedo random numbers which are related to each other.
+</P>
+<P> 000010..06000F - contains the <A HREF="#GAME MAP">game map</A>. See the
+discussion below. The spatial dimensions used in the game are: one tile has 10
+square meters of area; the height marks in the game are 4/3 meters (internal
+units are 1/3 meters). </P>
+<P> 060010..060013: an incrementing counter, two upper bits not used - not used
+as a trigger as far as I can tell </P>
+<P> 060014.. 198813 - <A HREF="sv4structs.html#sprite">sprite data
+structures</A>. Each structure has 256 bytes. There are 5,000 sprite
+structures. Items stored in these structures include peeps (guest and staff)
+and ride vehicles. Ducks are also stored here. The vomit sprites are also
+stored here even though they are not moving objects. </P>
+<P> 198814, 198815: Sprite# of next sprite object to be added. <BR>
+198816, 198817: Sprite# of first vehicle sprite <BR>
+198818, 198819: Sprite# of 1st peep sprite <BR>
+19881A, 19881B: Sprite# of 1st duck/moving text sprite <BR>
+19881C, 19881D: Sprite# of 1st trash, vomit sprite <BR>
+19881E, 10881F: Sprite# of 1st oversized ride car? <BR>
+198820, 198821: Sprite structures available (counts down from 5000) <BR>
+198822, 198823: Count of vehicles in game <BR>
+198824, 198825: Count of peeps in game <BR>
+198826, 198827: Count of ducks/moving text <BR>
+198828, 198829: Count of trash/vomit <BR>
+19882A, 19882B: Count of oversized? </P>
+<P> 19882C..19882F: Offset of park name in name string array - only use the
+lower 10 bits (the MSB is set if there is a string entry). <BR>
+198830..198833: ? </P>
+<P> 198834..198837 - Cash amount (divide by 10 for dollars etc.) <BR>
+198838, 19883B - Loan amount (divide by 10 for dollars etc.) </P>
+<P> 19883C..19883F - bit 0: Park status: 0 = closed, 1 = open; bit 2 set to
+prohibit land modification; bit 3 set to prohibit removing trees/scenery; bit 4
+is set to &quot;show real names&quot;; bit 5 set to prohibit building above
+tree level; bit 6 set to indicate &quot;low intensity peeps&quot;; bit 7 set to
+prohibit advertising; bit 8 set for cheat detection?; bit 9 set for &quot;high
+intensity peeps&quot;(high intensity overrides low intensity); bit 11 = set if
+no use of money; bit 13 set if admission locked at free; bit 15 is set to
+prohibit changing &quot;real names&quot; option.</P>
+<P> 198840..198841: Park entry fee <BR>
+198842,198843: Park Entry Point #1: X (32 per tile) <BR>
+198844,198845: Park Entry Point #1: Y (32 per tile) <BR>
+198846,198847: Park Entry Point #1: Z (16 per tile height)<BR>
+198848 : park Entry #1: Direction </P>
+<P> 198849: ? </P>
+<P> 19884A,19884B: Peep Entry Point #1: X (32 per tile) <BR>
+19884C,19884D: Peep Entry Point #1: Y (32 per tile) <BR>
+19884E: Peep Entry Point #1: tile height <BR>
+19884F: Peep Entry Point #1: Direction (0=East, 1=South, 2=West, 3=North) </P>
+<P> 198850,198851: Peep Entry Point #2: X (32 per tile) (FFFF if unused ?)<BR>
+198852,198853: Peep Entry Point #2: Y (32 per tile) <BR>
+198854: Peep Entry Point #2: tile height <BR>
+198855 Peep Entry Point #2: Direction (0=East, 1=South, 2=West, 3=North) </P>
+<P> 198856: ? </P>
+<P> 198857 - Research rate: 0 = none, 1 = minimum, 2 = normal, 3 = maximum </P>
+<P> 198858.. 19885B: ? <BR>
+19885C-198866: <A HREF="Menutables.html#Ridesmenu">Rides Menu</A> <BR>
+198867..19887B: (reserve area for ride menu) <BR>
+19887C..198887: <A HREF="Menutables.html#Vehiclemenu">Vehicle Menu </A>(similar
+to above ride menu - one bit for each vehicle) <BR>
+198888..19889B: (reserve area for vehicle menu) <BR>
+19889C..1989FF: <A HREF="Menutables.html#Ridefeatures">Ride feature 1</A> table
+= 89 (decimal) structures of 4 bytes for each <A
+HREF="Ridecodes.html">ride</A>. <BR>
+198A00..198A9B: (reserve area for ride feature table 1) <BR>
+198A9C..198BFF: ride feature table 2 (4 bytes for each ride) <BR>
+198C00..198B9B: (reserve area for ride feature table 2) <BR>
+198C9C,198C9D: Number of guests in park <BR>
+198C9E,198C9F: ? </P>
+<P> The following table presents the starting byte of the 4-byte value for the
+item indicated.Divide numbers by 10 for display values (dollars, etc.) </P>
+<TABLE FRAME="BORDER" CELLSPACING="1">
+<TR>
+<TD></TD>
+<TD>This month</TD>
+<TD>1 month ago</TD>
+<TD>2 months ago</TD>
+<TD>3 months ago</TD>
+<TD>4 months ago</TD>
+<TD>5 months ago</TD>
+<TD>6 months ago</TD>
+<TD>7 months ago</TD>
+</TR>
+<TR>
+<TD>Ride construction</TD>
+<TD>198CA0</TD>
+<TD>198CD8</TD>
+<TD>198D10</TD>
+<TD>198D48</TD>
+<TD>198D80</TD>
+<TD>198DB8</TD>
+<TD>198DF0</TD>
+<TD>198E28</TD>
+</TR>
+<TR>
+<TD>Ride operation</TD>
+<TD>198CA4</TD>
+<TD>198CDC</TD>
+<TD>198D14</TD>
+<TD>198D4C</TD>
+<TD>198D84</TD>
+<TD>198DBC</TD>
+<TD>198DF4</TD>
+<TD>198E2C</TD>
+</TR>
+<TR>
+<TD>Land purchase</TD>
+<TD>198CA8</TD>
+<TD>198CE0</TD>
+<TD>198D18</TD>
+<TD>198D50</TD>
+<TD>198D88</TD>
+<TD>198DC0</TD>
+<TD>198DF8</TD>
+<TD>198E30</TD>
+</TR>
+<TR>
+<TD>Landscaping</TD>
+<TD>198CAC</TD>
+<TD>198CE4</TD>
+<TD>198D1C</TD>
+<TD>198D54</TD>
+<TD>198D8C</TD>
+<TD>198DC4</TD>
+<TD>198DFC</TD>
+<TD>198E34</TD>
+</TR>
+<TR>
+<TD>Park tickets</TD>
+<TD>198CB0</TD>
+<TD>198CE8</TD>
+<TD>198D20</TD>
+<TD>198D58</TD>
+<TD>198D90</TD>
+<TD>198DC8</TD>
+<TD>198E00</TD>
+<TD>198E38</TD>
+</TR>
+<TR>
+<TD>Ride tickets</TD>
+<TD>198CB4</TD>
+<TD>198CEC</TD>
+<TD>198D24</TD>
+<TD>198D5C</TD>
+<TD>198D94</TD>
+<TD>198DCC</TD>
+<TD>198E04</TD>
+<TD>198E3C</TD>
+</TR>
+<TR>
+<TD>Shop sales</TD>
+<TD>198CB8</TD>
+<TD>198CF0</TD>
+<TD>198D28</TD>
+<TD>198D60</TD>
+<TD>198D98</TD>
+<TD>198DD0</TD>
+<TD>198E08</TD>
+<TD>198E40</TD>
+</TR>
+<TR>
+<TD>Shop stock</TD>
+<TD>198CBC</TD>
+<TD>198CF4</TD>
+<TD>198D2C</TD>
+<TD>198D64</TD>
+<TD>198D9C</TD>
+<TD>198DD4</TD>
+<TD>198E0C</TD>
+<TD>198E44</TD>
+</TR>
+<TR>
+<TD>Food sales</TD>
+<TD>198CC0</TD>
+<TD>198CF8</TD>
+<TD>198D30</TD>
+<TD>198D68</TD>
+<TD>198DA0</TD>
+<TD>198DD8</TD>
+<TD>198E10</TD>
+<TD>198E48</TD>
+</TR>
+<TR>
+<TD>Food stock</TD>
+<TD>198CC4</TD>
+<TD>198CFC</TD>
+<TD>198D34</TD>
+<TD>198D6C</TD>
+<TD>198DA4</TD>
+<TD>198DDC</TD>
+<TD>198E14</TD>
+<TD>198E4C</TD>
+</TR>
+<TR>
+<TD>Staff wages</TD>
+<TD>198CC8</TD>
+<TD>198D00</TD>
+<TD>198D38</TD>
+<TD>198D70</TD>
+<TD>198DA8</TD>
+<TD>198DE0</TD>
+<TD>198E18</TD>
+<TD>198E50</TD>
+</TR>
+<TR>
+<TD>Marketing</TD>
+<TD>198CCC</TD>
+<TD>198D04</TD>
+<TD>198D3C</TD>
+<TD>198D74</TD>
+<TD>198DAC</TD>
+<TD>198DE4</TD>
+<TD>198E1C</TD>
+<TD>198E54</TD>
+</TR>
+<TR>
+<TD>Research</TD>
+<TD>198CD0</TD>
+<TD>198D08</TD>
+<TD>198D40</TD>
+<TD>198D78</TD>
+<TD>198DB0</TD>
+<TD>198DE8</TD>
+<TD>198E20</TD>
+<TD>198E58</TD>
+</TR>
+<TR>
+<TD>Loan interest</TD>
+<TD>198CD4</TD>
+<TD>198D0C</TD>
+<TD>198D44</TD>
+<TD>198D7C</TD>
+<TD>198DB4</TD>
+<TD>198DEC</TD>
+<TD>198E24</TD>
+<TD>198E5C</TD>
+</TR>
+</TABLE>
+<P> </P>
+<TABLE FRAME="BORDER" CELLSPACING="1">
+<TR>
+<TD></TD>
+<TD>8 months ago</TD>
+<TD>9 months ago</TD>
+<TD>10 months ago</TD>
+<TD>11 months ago</TD>
+<TD>12 months ago</TD>
+<TD>13 months ago</TD>
+<TD>14 months ago</TD>
+<TD>15 months ago</TD>
+</TR>
+<TR>
+<TD>Ride construction</TD>
+<TD>198E60</TD>
+<TD>198E98</TD>
+<TD>198ED0</TD>
+<TD>198F08</TD>
+<TD>198F40</TD>
+<TD>198F78</TD>
+<TD>198FB0</TD>
+<TD>198FE8</TD>
+</TR>
+<TR>
+<TD>Ride operation</TD>
+<TD>198E64</TD>
+<TD>198E9C</TD>
+<TD>198ED4</TD>
+<TD>198F0C</TD>
+<TD>198F44</TD>
+<TD>198F7C</TD>
+<TD>198FB4</TD>
+<TD>198FEC</TD>
+</TR>
+<TR>
+<TD>Land purchase</TD>
+<TD>198E68</TD>
+<TD>198EA0</TD>
+<TD>198ED8</TD>
+<TD>198F10</TD>
+<TD>198F48</TD>
+<TD>198F80</TD>
+<TD>198FB8</TD>
+<TD>198FF0</TD>
+</TR>
+<TR>
+<TD>Landscaping</TD>
+<TD>198E6C</TD>
+<TD>198EA4</TD>
+<TD>198EDC</TD>
+<TD>198F14</TD>
+<TD>198F4C</TD>
+<TD>198F84</TD>
+<TD>198FBC</TD>
+<TD>198FF4</TD>
+</TR>
+<TR>
+<TD>Park tickets</TD>
+<TD>198E70</TD>
+<TD>198EA8</TD>
+<TD>198EE0</TD>
+<TD>198F18</TD>
+<TD>198F50</TD>
+<TD>198F88</TD>
+<TD>198FC0</TD>
+<TD>198FF8</TD>
+</TR>
+<TR>
+<TD>Ride tickets</TD>
+<TD>198E74</TD>
+<TD>198EAC</TD>
+<TD>198EE4</TD>
+<TD>198F1C</TD>
+<TD>198F54</TD>
+<TD>198F8C</TD>
+<TD>198FC4</TD>
+<TD>198FFC</TD>
+</TR>
+<TR>
+<TD>Shop sales</TD>
+<TD>198E78</TD>
+<TD>198EB0</TD>
+<TD>198EE8</TD>
+<TD>198F20</TD>
+<TD>198F58</TD>
+<TD>198F90</TD>
+<TD>198FC8</TD>
+<TD>199000</TD>
+</TR>
+<TR>
+<TD>Shop stock</TD>
+<TD>198E7C</TD>
+<TD>198EB4</TD>
+<TD>198EEC</TD>
+<TD>198F24</TD>
+<TD>198F5C</TD>
+<TD>198F94</TD>
+<TD>198FCC</TD>
+<TD>199004</TD>
+</TR>
+<TR>
+<TD>Food sales</TD>
+<TD>198E80</TD>
+<TD>198EB8</TD>
+<TD>198EF0</TD>
+<TD>198F28</TD>
+<TD>198F60</TD>
+<TD>198F98</TD>
+<TD>198FD0</TD>
+<TD>1990008</TD>
+</TR>
+<TR>
+<TD>Food stock</TD>
+<TD>198E84</TD>
+<TD>198EBC</TD>
+<TD>198EF4</TD>
+<TD>198F2C</TD>
+<TD>198F64</TD>
+<TD>198F9C</TD>
+<TD>198FD4</TD>
+<TD>19900C</TD>
+</TR>
+<TR>
+<TD>Staff wages</TD>
+<TD>198E88</TD>
+<TD>198EC0</TD>
+<TD>198EF8</TD>
+<TD>198F30</TD>
+<TD>198F68</TD>
+<TD>198FA0</TD>
+<TD>198FD8</TD>
+<TD>199010</TD>
+</TR>
+<TR>
+<TD>Marketing</TD>
+<TD>198E8C</TD>
+<TD>198EC4</TD>
+<TD>198EFC</TD>
+<TD>198F34</TD>
+<TD>198F6C</TD>
+<TD>198FA4</TD>
+<TD>198FDC</TD>
+<TD>199014</TD>
+</TR>
+<TR>
+<TD>Research</TD>
+<TD>198E90</TD>
+<TD>198EC8</TD>
+<TD>198F00</TD>
+<TD>198F38</TD>
+<TD>198F70</TD>
+<TD>198FA8</TD>
+<TD>198FE0</TD>
+<TD>199018</TD>
+</TR>
+<TR>
+<TD>Loan interest</TD>
+<TD>198E94</TD>
+<TD>198ECC</TD>
+<TD>198F04</TD>
+<TD>198F3C</TD>
+<TD>198F74</TD>
+<TD>198FAC</TD>
+<TD>198FE4</TD>
+<TD>19901C</TD>
+</TR>
+</TABLE>
+<P> 199020..199023: ?number of guests in park<BR>
+199024: ?<BR>
+199025: color for handymen<BR>
+199026: color for mechanics<BR>
+199027: color for security guards</P>
+<P> 199028..1990A7: <A HREF="Menutables.html#Scenerymenu">Scenery Menu</A> </P>
+<P> 1990A8: banner menu items: bit 0=standard, 1=jungle, 2=roman, 3=egyptian,
+4=mining, 5=jurrasic, 6=asian,7=snow <BR>
+1990A9: banner menu items: bit 0=space, 1..7=unused<BR>
+1990AA..199107: ? </P>
+<P> 199108,199109: current park rating </P>
+<P> 19910A..199149: historical park rating (for curve) the low byte is in
+19910A through 199129 while the high byte is in 19912A through 199149. &nbsp;an
+FF indicates 'not used' </P>
+<P> 19914A: Research selection: bit 0=Rollercoasters, bit 1 = Thrill rides, bit
+2 = Gentle rides, bit 3 = Shops/stalls, bit 4 = Theming, bit 5 = Ride
+improvements </P>
+<P> 19914B: research progress description: 0=initial research, 1=designing,
+2=completing <BR>
+19914C: last development - research item <BR>
+19914D: last development - corresponding ride<BR>
+19914E: last development - research category <BR>
+19914F: last development - flag </P>
+<P> 199150..199537 : <A HREF="#RESEARCH">Research items</A>. up to 200 entries
+of 5 bytes each. Not &nbsp;used in LL (goto 199C9C for LL) <BR>
+199538: next development - research item <BR>
+199539: next development - corresponding ride<BR>
+19953A: next development - research category <BR>
+19953B: next development - flag <BR>
+19953C..19953D: ? <BR>
+19953E..199541: ? <BR>
+199542,199543: Cheat detection: count of owned land <BR>
+199544..199545: ? <BR>
+199546..199547: ?<BR>
+199548..19954B: Max loan amount (divide by 10 to get dollars, etc) <BR>
+19954C..19954D: &quot;cash in pocket&quot; base value for newly generated
+guests. Varies from -$10, base, +$10, +$20. A zero value defaults to $50.<BR>
+19954E: avg hunger of newly generated guests.<BR>
+19954F: avg thirst of newly generated guests.<BR>
+199550 : scenario goal: <B>1</B> = #peeps (&amp; park rating), <B>2</B> = park
+value, <B>3</B> = have fun!, <B>4</B> = competition, &nbsp;<B>5</B> = ten
+different coasters with excitement at least 6.00, <B>6</B> = maintain park
+rating &amp; #peeps, <B>7</B> = monthly ride income, <B>8</B> = ten different
+coasters with excitement at least 7.00 and minimum length as specified,
+<B>9</B> = complete five coasters with minimum excitement as specified<BR>
+199551: number of years to reach goal (10 for competitions)<BR>
+199552,199553: ? <BR>
+199554..199557: money (park value/ride income) goal / coaster excitement goal
+(only for goal type 9)<BR>
+199558, 199559: #peeps goal / minimum coaster length (meters)</P>
+<P> 19955A ..19956D: Advertising, 1 byte for each type, lower 4 bits indicate
+weeks remaining. </P>
+<P> 19956E..199573: 1 Byte for each type of advertising, indicates the
+ride/food associated with the advertising that displays it. </P>
+<P> 199574..199583: ? <BR>
+199584..199783: 128 DWords (previous cash values)<BR>
+199784..199787: Recent change in cash <BR>
+199788..19978B: previous recent change in cash multiplied by 7(?) <BR>
+19978C..19978F: sum of &quot;recent changes in cash&quot;<BR>
+199790..199791: ? <BR>
+199792..199793: ? <BR>
+199794..199993: 128 DWords: Weekly Profit over time<BR>
+199994..199997: Park value <BR>
+199998..199B97: 128 DWords: Park Value over time<BR>
+199B98..199B9B: scenario objective value at completion <B>Note:</B> MSB set to
+indicated objective not met; if bit 0 set - failed objective<BR>
+199B9C..199B9F: number of admissions<BR>
+199BA0..199BA3: income from admissions <BR>
+199BA4..199BA7: Company Value [<B>cash</B> + <B>park value</B> - <B>loan</B>] 
+<BR>
+199BA8..199BB7: ?<BR>
+199BB8..199BC7: park awards - four structures of 4 bytes each. Each structure
+consists of two words. The first word is a flag to indicate if there is an
+award(zero=no, nonzero = yes); the second word indicates the award/string as
+follows: 0=most untidy, 1=tidiest, 2=best rollercoasters, 3=best value, 4=most
+beautiful, 5=Worst value, 6=safest, 7=best staff, 8=best food, 9=worst food,
+A=best bathrooms, B=most disappointing, C=best water rides<BR>
+199BC8..199BC9: Price for purchasing land (div by 10 for dollars)<BR>
+199BCA..199BCB: Price for buying Construction Rights (div by 10 for dollars) 
+<BR>
+199BCC..199BCD: ?</P>
+<P>199BCE..199BCF: ?</P>
+<P> 199BD0..199BD3: contains 58 BB C3 00 if error detected????<BR>
+199BD4..199C13: user name (null terminated string)<BR>
+199C14..199C17: Version number of game - convert to decimal: first digit is
+major version number; next two digits are minor version number; last three
+digits are revision number. </P>
+<P> 199C18..199C1B: company value at scenario completion </P>
+<P> 199C1C..199C1F: 1st financial checksum [ 70093A minus <B>cash</B>,
+<FONT COLOR="#FF0000">ror</FONT> 5, minus <B>loan</B>, <FONT
+COLOR="#FF0000">ror</FONT> 7, add <B>maxloan</B>, <FONT
+COLOR="#FF0000">ror</FONT> 3 ]</P>
+<P> 199C20..199C21: number of ride structures used</P>
+<P> 199C22..199C23: negative of number of rides available (for cheat detection)
+</P>
+<P> 199C24..199C25: max number of tiles(land) allowed to own (for cheat
+detection)</P>
+<P> 199C26..199C27: negative of max number of tiles allowed to own</P>
+<P>199C28..199C2B: 3rd financial checksum: [<B>cash</B> - <B>loan</B> - all
+values in monthly expense/income table.]<BR>
+199C2C..199C2F: Scenario Slot Number Checksum<BR>
+199C30..199C4F: Name of winner; if not won or unknown, the character '?' is
+used <BR>
+199C50..199C53: 2nd financial checksum [ <B>cash</B> <FONT
+COLOR="#FF0000">ror</FONT> thirteen, <FONT COLOR="#FF0000">xor</FONT> 0F4EC9621
+]</P>
+<P> 199C54..199C7B: (copyright notice in SC4 files) <BR>
+199C7C,D: 0 in SV4 files, FED3 in SC4 files (for cheat detection)<BR>
+199C7E,F: 0 in SV4 files, F318 in SC4 files (for cheat detection)<BR>
+199C80,1: 0 in SV4 files, B218 in SC4 files (for cheat detection)<BR>
+199C82,3: 0 in SV4 files, 458A in SC4 files (for cheat detection)<BR>
+199C84..199C85: ?<BR>
+199C86..199C87: ?<BR>
+The following four words are not used (contain zero) in original RCT files.
+They specify the size of the map in expansion pack files.<BR>
+199C88..199C89: meaning unknown, 32*(park_size - 1)<BR>
+199C8A..199C8B: meaning unknown, value in 199C88 plus 011E<BR>
+199C8C..199C8D: park size (visible tiles per edge +2)<BR>
+199C8E..199C8F: meaning unknown, value in 199C88 minus 1 (except full size park
+in which case the value is 0FFF)<BR>
+199C90..199C93: &quot;same price&quot; flags:</P>
+<TABLE BORDER="1">
+<TR>
+<TD>&nbsp;</TD>
+<TD>0</TD>
+<TD>1</TD>
+<TD>2</TD>
+<TD>3</TD>
+<TD>4</TD>
+<TD>5</TD>
+<TD>6</TD>
+<TD>7</TD>
+</TR>
+<TR>
+<TD>199C90</TD>
+<TD>balloons</TD>
+<TD>cuddly toy</TD>
+<TD>map</TD>
+<TD>on-ride photo</TD>
+<TD>umbrella</TD>
+<TD>drinks</TD>
+<TD>burgers</TD>
+<TD>fries</TD>
+</TR>
+<TR>
+<TD>199C91</TD>
+<TD>ice cream</TD>
+<TD>cotton candy</TD>
+<TD>&nbsp;</TD>
+<TD>&nbsp;</TD>
+<TD>&nbsp;</TD>
+<TD>pizza</TD>
+<TD>&nbsp;</TD>
+<TD>popcorn</TD>
+</TR>
+<TR>
+<TD>199C92</TD>
+<TD>hot dogs</TD>
+<TD>seafood</TD>
+<TD>hats</TD>
+<TD>candy apple</TD>
+<TD>t-shirt</TD>
+<TD>doughnut</TD>
+<TD>coffee</TD>
+<TD>&nbsp;</TD>
+</TR>
+<TR>
+<TD>199C93</TD>
+<TD>chicken</TD>
+<TD>lemonade</TD>
+<TD>&nbsp;</TD>
+<TD>&nbsp;</TD>
+<TD>&nbsp;</TD>
+<TD>&nbsp;</TD>
+<TD>&nbsp;</TD>
+<TD>bathroom</TD>
+</TR>
+</TABLE>
+<P><BR>
+199C94..199C95: ? <BR>
+199C96..199C98: ? <BR>
+199C99: Water color (0=normal, 1=red) <BR>
+199C9A..199C9B: ? <BR>
+199C9C..19A01F: <A HREF="#RESEARCH">Research items</A> in LL only <BR>
+19A020..19B57B: ?</P>
+<P> 19B57C..19B89B: banner info. 100 sets of 8 byte structures(byte 0:
+0=standard, 1=jungle(wooden), 2=classical, 3=egyptian, 4=mining,
+5=prehistoric(bone), 6=asian, 7=snowy, 8=space,FF= unused; byte1: 0=normal,
+1=no entry; bytes 2,3: string index; byte 4: color; byte 5: text color; bytes
+6,7: ?) </P>
+<P> 19B89C..1A389B: 1024 Null terminated Name strings for park, rides, peeps,
+etc. Each string is allocated 32 bytes. Names are entered starting at the last
+location (1A387C) and new names are entered in preceeding slots as the user
+creates them. </P>
+<P> 1A389C..1A389F: a game time counter - used to trigger various events </P>
+<P> 1A38A0..1C963F: <A HREF="sv4structs.html#ride">Ride structure</A>. 255
+structures of 608 bytes each </P>
+<P> 1C9640, 1C9641 - a game time counter - not used as a trigger for any events
+as far as I can tell</P>
+<P> 1C9642,3: Horizontal view position (0000 to 1FFF, negated depending on
+Viewing angle)<BR>
+1C9644,5: Vertical view position (0000 to 1FFF, negated depending on Viewing
+angle)<BR>
+1C9646: Viewing Zoom factor (0 = closest, 1 = medium, 2 = far) <BR>
+1C9647: Viewing angle (0 = from NE, 1 = from NW, 2 = from SW, 3 = from SE)
+[note: horizontal and vertical view position will be positive or negative
+depending on the view angle as indicated below: </P>
+<TABLE FRAME="BORDER" CELLPADDING="2" ALIGN="Center">
+<TR>
+<TD>angle</TD>
+<TD>Horiz</TD>
+<TD>Vert</TD>
+</TR>
+<TR>
+<TD><P ALIGN="Center"> 0</P>
+</TD>
+<TD><P ALIGN="Center"> -</P>
+</TD>
+<TD><P ALIGN="Center"> +</P>
+</TD>
+</TR>
+<TR>
+<TD><P ALIGN="Center"> 1</P>
+</TD>
+<TD><P ALIGN="Center"> -</P>
+</TD>
+<TD><P ALIGN="Center"> -</P>
+</TD>
+</TR>
+<TR>
+<TD><P ALIGN="Center"> 2</P>
+</TD>
+<TD><P ALIGN="Center"> +</P>
+</TD>
+<TD><P ALIGN="Center"> -</P>
+</TD>
+</TR>
+<TR>
+<TD><P ALIGN="Center"> 3</P>
+</TD>
+<TD><P ALIGN="Center"> +</P>
+</TD>
+<TD><P ALIGN="Center"> +</P>
+</TD>
+</TR>
+</TABLE>
+<P> 1C9648..1CADB7: Animation object locations (includes Park/Ride entry
+banners, fountains, ride pieces, etc.) one thousand - six byte structures:
+first byte=height, second byte=object code, 3rd &amp; 4th bytes = X (32 per
+tile), 5th &amp; 6th bytes = Y(32 per tile). The object code is: 00=ride
+entrance, 02=scenery(eg fountain), 03=park entry, 04=waterfall, 05=rapids,
+06=on ride photo, 07=whirlpool, 08=spinning tunnel, 09=ghost train cars,
+0A=banner</P>
+<P>1CADB8..1CADBB: number of animation objects (Park/Ride entry, queue &amp;
+banner, fountains, etc) points <BR>
+1CADBC..1CADC7: ? <BR>
+1CADC8..1CADC9: progression of scrolling text (start point of scrolling text) 
+<BR>
+1CADCA..1CADCD: ?<BR>
+1CADCE,1CADCF: ?<BR>
+1CADD0..1CAE43: ?<BR>
+1CAE44..1F06A3: <A HREF="datalogging.html">Data Logging</A> - 8 structures of
+19,212 bytes each (graphic charts for G's, etc on rides)<BR>
+1F06A4..1F06A7: next guest number<BR>
+1F06A8..1F06A9: another game counter, two upper bits always zero<BR>
+1F06AA..1F431D: <A HREF="patrolarea.html">Patrol areas</A> </P>
+<P>1F431E: ? - has the value 01<BR>
+1F431F: ? - has the value 01<BR>
+1F4320: ? - has the value 01<BR>
+1F4321: ? - has the value 01<BR>
+1F4322..1F4329: ?<BR>
+1F432A: climate (0=wet, 1=normal, 2=dry, 3=cold)<BR>
+1F432B: ? - usu has the value 05 but a few scenarios have the value 0B</P>
+<P>1F432C..1F432D: weather timer - count down from 1920 </P>
+<P>1F432E : current weather (0=sunny, 1=partly cloudy, 2=cloudy, 3=showers,
+4=rain, 5=thunderstorm, 6=snow) <BR>
+1F432F: target weather <BR>
+1F4330: current temperature (positive only) <BR>
+1F4331: target temperature <BR>
+1F4332: lightning/thunder, 0=none, 1=occasional, 2=frequent <BR>
+1F4333: target lightning/thunder <BR>
+1F4334: shade, 0=none, 1=some, 2=dark <BR>
+1F4335: target shade <BR>
+1F4336: rain, 0=none, 1=light, 2=heavy <BR>
+1F4337: target rain </P>
+<P> 1F4338..1F8313: Message area. 61 messages. Each message structure uses 268
+bytes. Current message at 1F4338, then put into last spot (1F8208) and others
+are moved up.<BR>
+The first thirteen bytes of each structure are flags. <BR>
+byte 0: Icon (00=[hide message], 01=ride, 02=peep walking, 03=peep walking,
+04=Money (coins), 05=blank, 06=Scenery, 07=CrowdofPeeps, 08=Award, 09=Graph) 
+<BR>
+byte 02,03: associated item (ie ride index, peep thought, peep index)<BR>
+byte 06: how many letters have been displayed<BR>
+byte 08: month (div by 8 for year)<BR>
+byte 0A: date: day of month<BR>
+byte 0C: color (90=white, 91=red, 92=green, 93=gold, 94=brown, 95=grey,
+96=blue, 97=purple, 98=beige, 99=pink, 9A=aqua, 9B=tan, 9C=green) <BR>
+byte 0D: null terminated string starts here. (byte value 05 is used to indicate a new line.)</P>
+<P> 1F8314..1F8351: Scenario name (not park name) </P>
+<P> 1F8352,3: <A HREF="scenarios.html">Scenario slot number</A> </P>
+<P> 1F8354..1F8357: scenario flags (expansion packs only) bit 12: error while
+loading</P>
+<P> 1F8358..1F8507: ? </P>
+<P> 1F8508..1F850B - these last four bytes of the file contain an <I>additional
+</I>checksum in CF/AA and LL saved games. This is in addition to the checksum
+added after the file is RLE encoded. This was not present in the original RCT
+files. This checksum is calculated by starting with the hex value 00000031 in
+the summation register. The summation register is rotated left 13 bits and then
+the byte of [unencoded] data structure is added to the low byte. This is done
+for the data from 000000 to 1F8507. </P>
+<P> </P>
+<HR>
+<H2 ALIGN="Center"> <A NAME="GAME MAP">GAME MAP</A> </H2>
+<P> The game has a grid of 126 by 126 tiles. The save file contains 128 by 128
+tiles. The tiles around the perimeter of the game &quot;board&quot; are not
+displayed but are apparently needed to display the rock edges around the
+&quot;board&quot;. The save file contains (among other things) a sequence of
+map elements. A map element data structure is used for all stationary items
+which appear on tiles. The sequence is: rows of columns; where each column
+contains a variable number of map elements (at least one). Each map element has
+8 bytes identified below as bytes 0 through 7. The map element data structure
+begins at address 000010. The first row consists of perimeter tiles so there is
+only one map element per tile. The second row consequently begins at 000410.
+The length of the second and subsequent rows depends on how many map elements
+are at each tile. I have used the arbitrary designation that the map begins at
+the SouthWest corner and the first row goes from West to East. </P>
+<P> <B>byte 0</B> - map element type identifier - <BR>
+<B><I>upper two bits</I></B>: indicate quadrant for smaller objects and are
+used as the two highest bits for the color code on geometric objects. NOTE: all
+geometric edge (wall) objects on a tile will have the same color; a geometric
+scenery object can have a different color from the geometric edge objects. Also
+used to indicate direction a queue entry faces. SURFACE tiles - the upper bit
+is a flag to use extended edge types, see the description under &quot;byte
+4&quot;. TRACK pieces: the most significant bit is set to indicate lift chain. 
+<BR>
+00 = entire tile or SW quadrant -or- facing&nbsp;West<BR>
+01 = NW quadrant -or- facing North<BR>
+10 = NE quadrant -or- facing East<BR>
+11 = SE quadrant.-or- facing South </P>
+<P> <B><I>middle four bits:</I> </B>indicate type of element <BR>
+0000 = surface tile <BR>
+0001 = path (&amp; road)<BR>
+0010 = track element &nbsp;or shop/stall<BR>
+0011 = scenery item (single tile) <BR>
+0100 = ride entry/exit, Park entrance <BR>
+0101 = fence(s)/wall(s) <BR>
+0110 = scenery item (multiple tile) <BR>
+0111 = banners </P>
+<P> <B><I>lower two bits:</I></B> </P>
+<TABLE FRAME="BORDER" CELLPADDING="2">
+<TR>
+<TD><B>bit values</B></TD>
+<TD><B>direction scenery/track item faces</B></TD>
+<TD><B>queue color</B></TD>
+<TD><B>path qualifier</B></TD>
+</TR>
+<TR>
+<TD><P ALIGN="Center"> 00</P>
+</TD>
+<TD><P ALIGN="Center"> West</P>
+</TD>
+<TD><P ALIGN="Center"> blue</P>
+</TD>
+<TD><P ALIGN="Center"> grey tarmac/dirt/crazy tile/tile</P>
+</TD>
+</TR>
+<TR>
+<TD><P ALIGN="Center"> 01</P>
+</TD>
+<TD><P ALIGN="Center"> North</P>
+</TD>
+<TD><P ALIGN="Center"> red</P>
+</TD>
+<TD><P ALIGN="Center"> red tarmac/grey tile/black dirt</P>
+</TD>
+</TR>
+<TR>
+<TD><P ALIGN="Center"> 10</P>
+</TD>
+<TD><P ALIGN="Center"> East</P>
+</TD>
+<TD><P ALIGN="Center"> yellow</P>
+</TD>
+<TD><P ALIGN="Center"> brown tarmac/red tile</P>
+</TD>
+</TR>
+<TR>
+<TD><P ALIGN="Center"> 11</P>
+</TD>
+<TD><P ALIGN="Center"> South</P>
+</TD>
+<TD><P ALIGN="Center"> green</P>
+</TD>
+<TD><P ALIGN="Center"> green tarmac/green tile</P>
+</TD>
+</TR>
+</TABLE>
+<P>In Loopy Landscapes, bit 0 of surface tiles is used to extend the surface
+type - see the description under &quot;byte 5&quot;</P>
+<P><B>byte 1</B> - The most significant bit is set to indicate the 'last' map
+element at this tile position. A single -or- a sequence of 8-byte map elements
+will be present for each tile position. The four bits of the lower nibble are
+used to indicate which quadrant(s) are used. bit 3 = NW, bit 2 = SW, bit 1 =
+SE, bit 0 = NE. The middle two bits of the upper nibble are used to indicate
+the support type for paths: X00X= normal (truss), X01X= wood post, X10X= steel
+post, X11X= bamboo post. bit 6 is set for &quot;indestructible&quot; track
+elements (used in certain scenarios).</P>
+<P> <B>byte 2</B> - base height of this element. Surface elements have heights
+which are multiples of 4. An element (eg. a large tree) which is located at the
+center of a sloped tile would have a base height which is 2 greater than the
+base height of the sloped surface element. A small tree on a slope would have a
+base height either 1 or 3 greater than the surface element depending on which
+quadrant it is in. </P>
+<P> <B>byte 3</B> - clearance (construction) height for this map element. {A
+value of zero is used for perimeter tiles.} The vertical space between the
+values in byte 2 and byte 3 is occupied by this element. No other space filling
+map element is allowed to occupy this range. </P>
+<P> </P>
+<TABLE FRAME="BORDER" CELLPADDING="2">
+<TR>
+<TD><P ALIGN="Right"> byte:</P>
+</TD>
+<TD><P ALIGN="Center"> 4</P>
+</TD>
+<TD><P ALIGN="Center"> 5</P>
+</TD>
+<TD><P ALIGN="Center"> 6</P>
+</TD>
+<TD><P ALIGN="Center"> 7</P>
+</TD>
+</TR>
+<TR>
+<TD>surface</TD>
+<TD>slope</TD>
+<TD>terrain/water</TD>
+<TD>grass</TD>
+<TD>ownership</TD>
+</TR>
+<TR>
+<TD>scenery (single tile)</TD>
+<TD>item</TD>
+<TD>age</TD>
+<TD>color</TD>
+<TD></TD>
+</TR>
+<TR>
+<TD>scenery (multiple tile)</TD>
+<TD>item</TD>
+<TD>index</TD>
+<TD>color</TD>
+<TD>color</TD>
+</TR>
+<TR>
+<TD>Tracks</TD>
+<TD>element</TD>
+<TD>index</TD>
+<TD>color</TD>
+<TD>ride index</TD>
+</TR>
+<TR>
+<TD>path</TD>
+<TD>type</TD>
+<TD>additions</TD>
+<TD>edges/corners</TD>
+<TD>addition status</TD>
+</TR>
+<TR>
+<TD>entry/exit</TD>
+<TD>item</TD>
+<TD>rides = 0; park=index</TD>
+<TD>rides=0; park=path</TD>
+<TD>ride index</TD>
+</TR>
+<TR>
+<TD>fence/wall</TD>
+<TD>slope</TD>
+<TD>item</TD>
+<TD>item</TD>
+<TD>item</TD>
+</TR>
+<TR>
+<TD>banner</TD>
+<TD>index into banner structures</TD>
+<TD>position</TD>
+<TD>FF(FD=one way)</TD>
+<TD>0</TD>
+</TR>
+</TABLE>
+<P> <B>byte 4 - <I>for multiple-tile scenery elements</I></B>: byte 5 contains
+the sequence number for the part of the scenery object to be rendered at this
+tile. The number of tiles occupied are in brackets.<BR>
+00 = Roman colosseum [12]<BR>
+01 = house [6]<BR>
+02 = Sphinx [8]<BR>
+03 = house [8]<BR>
+04 = Colonnade [4]<BR>
+05 = Mine Hut #1 [4]<BR>
+06 = Mine Hut #2 [4]<BR>
+07 = Volcanoe [12]<BR>
+08 = Pyramid [36] Note: the pyramid is &quot;hollow&quot; inside<BR>
+09 = Mine Shaft [6]<BR>
+0A = Martian Building [4]<BR>
+0B = Skeleton [2]<BR>
+0C = Dinosaur #1 [2]<BR>
+0D = Dinosaur #2 [2]<BR>
+0E = Dinosaur #3 [2] </P>
+<P> the following are in Loopy landscapes:<BR>
+0F = ice palace [4]<BR>
+10 = castle tower square brown [1]<BR>
+11 = castle tower tall brown [1]<BR>
+12 = castle tower square grey [1]<BR>
+13 = castle tower tall grey [1]<BR>
+14 = tent [1]<BR>
+15 = medieval house 1 [1]<BR>
+16 = medieval house 2 [1]<BR>
+17 = medieval house 3 [1]<BR>
+18 = giant pumpkin [4]<BR>
+19 = space rocket [4]<BR>
+1A = town hall [4]<BR>
+1B = urban house 1 [4]<BR>
+1C = gas station [4]<BR>
+1D = pagoda [4]<BR>
+1E = office block [4]<BR>
+1F = urban house 2 [4]<BR>
+20 = satellite [4]<BR>
+21 = space capsule [1]<BR>
+22 = tenement [1]<BR>
+</P>
+<P> <B>byte 4 - <I>for <A HREF="scenery.html">single-tile scenery
+elements</A></I></B> </P>
+<P> <B>byte 4 - <I>tracks</I></B>: the <A HREF="Trackelements.html">track
+element</A> code number. {includes: shops, info kiosk and ride bases}Track
+pieces which occupy more than one tile use byte 5 to indicate which section of
+the track element is located at this tile. </P>
+<P> <B>byte 4 - <I>park/ride entry/exit</I></B>: for park entrance, byte 5
+indicates which section. Otherwise, the remaining bytes are 00's.<BR>
+00 = Ride entrance <BR>
+01 = Ride exit <BR>
+02 = Park entrance </P>
+<P> <B>byte 4 - <I>paths - upper nibble</I></B>: <BR>
+00 = queue <BR>
+01 = tarmac <BR>
+02 = dirt <BR>
+03 = crazy tile <BR>
+04 = roads (not available to user) <BR>
+05 = tile </P>
+<P> <B>byte 4 - <I>paths - lower nibble</I></B>: bit 3 is set for a queue
+entry, bits 2, 1, 0 indicate the slope:<BR>
+0 = flat <BR>
+4 = up to West <BR>
+5 = up to North <BR>
+6 = up to East<BR>
+7 = up to South<BR>
+</P>
+<P> <B>byte 4 - <I>fences/walls</I></B>: the upper three bits are the three
+lower bits of the color of geometric objects.<BR>
+<BR>
+<B>byte 4 - <I>surface tiles - upper 3 bits</I></B>: the edge style of surface
+elements. 000 = rock, 001 = brick, 010 = iron, 011 = wood, 100 = grey wall, 101
+= yellow wall, 110 = black wall, 111 = red wall. In Loopy Landscapes, the MSB
+of byte 0 indicates an extended set of edge styles. If that bit is set on a
+surface element, use the following: 000 = Ice, 001 = purple wall, 010 = green
+wall, 011 = brown stone wall, 100 = grey stone wall, 101 = skyscraper A, 110 =
+skyscraper B, 111 = not used.</P>
+<P> <B>byte 4 - <I>fences/wall - lower 5 bits</I></B>: the slope of the
+surface. Thes same value as below. </P>
+<P> <B>byte 4 - <I>banners</I></B>: index into banner data structure (100 eight
+byte structures beginning at 19B57C) </P>
+<P> <B>byte 4 - <I>surface tiles - lower 5 bits</I></B>: the slope of surface
+elements. There are 19 possible tile slopes. (The stored tile height is the
+lowest point of a surface tile.) The lower four bits correspond to corners of
+the tile. If the bit is set, that corner is elevated by one unit. The case of
+all four bits being set is not used. If the fifth bit is set, three of the four
+lower bits will be set; and the corner opposite of the zero bit is elevated by
+two units rather than one. The image below shows the slopes as viewed from the
+SouthWest corner. </P>
+<P> <IMG SRC="graphics/slopes.jpg" WIDTH="289" HEIGHT="218"> </P>
+<P> <B>byte 5 - <I>surface tiles - upper 3 bits</I></B>: the terrain type for
+surface elements. 000 = grass, 001 = sand, 010 = dirt, 011 = rock, 100 =
+martian, 101 = checkerboard, 110 = dirt/grass clumps, 111 = roofing tiles. In
+Loopy Landscapes, the LSB of byte 0 is also used as a bit for terrain type. If
+that bit is set, the bits of byte 5 correspond to: 000 = Snow/Ice, 001= log
+roof, 010 = iron roof, 011 = grey roofing tile, 100 = red grid, 101 = yellow
+grid, 110 = purple grid, 111 = green grid</P>
+<P> <B>byte 5 - <I>surface tiles - lower 5 bits</I></B>: absolute height of
+water, if present.NOT the height of water above ground. The maximum allowed
+value in the game is 28. This value is to be multiplied by four. </P>
+<P> <B>byte 5 - <I>banners - lower 2 bits</I></B>: position of the banner posts
+(it faces toward the opposite direction). 0 = West, 1 = North, 2 = East, 3 =
+South. </P>
+<P> <B>byte 5 - <I>paths</I></B>: additions to path edge. All available edges
+will contain a copy of the item. <BR>
+0 = nothing<BR>
+1 = single lamps<BR>
+2 = triple lamps<BR>
+3 = litter bins<BR>
+4 = benches<BR>
+5 = jumping fountains<BR>
+6 = egyptian lamps<BR>
+7 = martian lamps<BR>
+8 = vandalized single lamps<BR>
+9 = vandalized triple lamps<BR>
+A = vandalized liter bins <BR>
+B = vandalized benches<BR>
+C = vandalized egyptian lamps <BR>
+D = vandalized martian lamps<BR>
+E = jumping snowballs<BR>
+</P>
+<P> <B>byte 5 - <I>fences/walls</I></B>: four sets of the upper two bits of the
+edge element code for each side of the tile (I know... this is confusing) The
+table below maps the bits of this byte to the edge element codes for each side.
+For example, bit 3 maps to bit 5 of the <B>North</B> element code. The
+remaining bits of each edge element code are in bytes 6 &amp; 7. </P>
+<P ALIGN="Center"> </P>
+<TABLE FRAME="BORDER" CELLPADDING="2">
+<TR>
+<TD><P ALIGN="Center"> bit 7</P>
+</TD>
+<TD><P ALIGN="Center"> bit 6</P>
+</TD>
+<TD><P ALIGN="Center"> bit 5</P>
+</TD>
+<TD><P ALIGN="Center"> bit 4</P>
+</TD>
+<TD><P ALIGN="Center"> bit 3</P>
+</TD>
+<TD><P ALIGN="Center"> bit 2</P>
+</TD>
+<TD><P ALIGN="Center"> bit 1</P>
+</TD>
+<TD><P ALIGN="Center"> bit 0</P>
+</TD>
+</TR>
+<TR>
+<TD><P ALIGN="Center"> S<SUB>5</SUB></P>
+</TD>
+<TD><P ALIGN="Center"> S<SUB>4</SUB></P>
+</TD>
+<TD><P ALIGN="Center"> E<SUB>5</SUB></P>
+</TD>
+<TD><P ALIGN="Center"> E<SUB>4</SUB></P>
+</TD>
+<TD><P ALIGN="Center"> N<SUB>5</SUB></P>
+</TD>
+<TD><P ALIGN="Center"> N<SUB>4</SUB></P>
+</TD>
+<TD><P ALIGN="Center"> W<SUB>5</SUB></P>
+</TD>
+<TD><P ALIGN="Center"> W<SUB>4</SUB></P>
+</TD>
+</TR>
+</TABLE>
+<P> The descriptions of the edge elements are listed here. Every edge element
+has a clearance height of 4. </P>
+<P> 00 = mesh fence <BR>
+01 = hedge <BR>
+02 = white railing <BR>
+03 = wood panel fence<BR>
+04 = barb wire fence <BR>
+05 = railing <BR>
+06 = brick wall <BR>
+07 = stone wall <BR>
+08 = conifer hedge <BR>
+09 = roman column wall<BR>
+0A = castle tall with window brown<BR>
+0B = castle tall with gate grey<BR>
+0C = creepy gate<BR>
+0D = <BR>
+0E = <BR>
+0F = no element at&nbsp;this edge <BR>
+</P>
+<P> 10 = mesh fence with gate (not available to user)<BR>
+11 = hedge with gate (not available to user)<BR>
+12 = white railing with gate (not available to user) <BR>
+13 = wood panel fence with gate (not available to user) <BR>
+14 = barb wire fence with gate (not available to user) <BR>
+15 = iron railing with gate (not available to user) <BR>
+16 = brick wall with gate (not available to user) <BR>
+17 = stone wall with gate (not available to user) <BR>
+18 = conifer hedge with gate (not available to user) <BR>
+19 = castle wall tall brown<BR>
+1A = castle wall medium brown<BR>
+1B = castel wall tall with window grey<BR>
+1C = barb fence with snow<BR>
+1D = <BR>
+1E = <BR>
+1F = no element at this edge </P>
+<P> 20 = roman wall <BR>
+21 = blue playing cards <BR>
+22 = martian wall <BR>
+23 = wood post fence <BR>
+24 = primitive wood fence - tall<BR>
+25 = leaded glass<BR>
+26 = white wood panel fence<BR>
+27 = wooden fence<BR>
+28 = castle wall short brown<BR>
+29 = castle wall tall with cross brown<BR>
+2A = castle wall tall grey<BR>
+2B = castle wall medium grey<BR>
+2C = wooden fence with snow<BR>
+2D = <BR>
+2E = <BR>
+2F = no element at this edge<BR>
+</P>
+<P> 30 = egyptian wall<BR>
+31 = red playing card wall<BR>
+32 = plate glass<BR>
+33 = red-wood post fence<BR>
+34 = primitive wood fence - short<BR>
+35 = bone fence<BR>
+36 = red-wood panel fence<BR>
+37 = jungle fence<BR>
+38 = castle wall short grey<BR>
+39 = castle wall tall with gate brown<BR>
+3A = castle wall tall with cross grey<BR>
+3B = creepy wall<BR>
+3C = post fence with snow<BR>
+3D = <BR>
+3E = <BR>
+3F = no element at this edge<BR>
+</P>
+<P> <B>byte 5 - <I>single tile scenery objects </I></B>: age (flowers wilt at
+28, die at 37) </P>
+<P> <B>byte 5 - <I>multitile structures - upper 6 bits</I></B>: contains a
+count (index) for which part of the structure is located at this tile. </P>
+<P> <B>byte 5 -<I> track elements</I></B>: contains a count (index) for which
+part of the structure is located at this tile. </P>
+<P> <B>byte 5 -<I> banners</I></B>: which edge banner is on: 0 = West; 1 =
+North; 2 = East; 3 = South </P>
+<P> <B>byte 6 -<I> surface map elements</I></B>: this value indicates the
+amount of grass growing on tiles. Tiles which are outside of the park boundary
+have the static value 01. Tiles within the park boundary have values which
+increase with time.(Least Significant 3 bits: 0=mowed, 1,2,3=clear,
+4,5,6=clumps, 7=reserved) </P>
+<P> <B>byte 6 -<I> scenery objects</I></B>: this byte contains the color </P>
+<P> <B>byte 6 - <I>fences/walls - upper nibble</I></B>: the lower four bits
+(N<SUB>3</SUB>..N<SUB>0</SUB>) of the North edge element code. </P>
+<P> <B>byte 6 - <I>fences/walls - lower nibble</I></B>: the lower four bits
+(W<SUB>3</SUB>..W<SUB>0</SUB>) of the West edge element code. </P>
+<P> <B>byte 6 - <I>paths - upper nibble</I></B>: the bits are set if the path
+extends in that corner: bit 3 for SW, bit 2 for SE, bit 1 NE, and bit 0 for NW.
+Note: on &quot;road&quot; paths, the center stripe is drawn on the appropriate
+edge when two (and only two) adjacent corner bits are set. </P>
+<P> <B>byte 6 - <I>paths - lower nibble</I></B>: the bits are set if the path
+extends in that direction: bit 3 for South, bit 2 for East, bit 1 for North,
+and bit 0 for West. For example, a path which extends to the South and to the
+East would have 1100 for these four bits. </P>
+<P> <B>byte 6 -<I> track elements</I></B>: color code </P>
+<P> <B>byte 6 - <I>multitile structure</I></B>: color code </P>
+<P> <B>byte 6 - <I>park entry</I></B>: path code(hex) - 4=grey tarmac, 5=red
+tarmac, 6=brown tarmac, 7=green tarmac, 8=brown dirt, 9=black dirt, 0C=crazy
+tile, 14=beige tile, 15=grey tile, 16=red tile, 17=green tile</P>
+<P> <B>byte 7 - <I>multitile structure</I></B>: color code </P>
+<P> <B>byte 7 - <I>paths</I></B>: state of addition(upper two bits=south item,
+next two bits=east item, next two bits=north item, lowest two bits=west item)
+trashcans = capacity (0=overflowing, 3=empty) </P>
+<P> <B>byte 7 - <I>fences/walls - upper nibble</I></B>: the lower four bits
+(S<SUB>3</SUB>..S<SUB>0</SUB>) of the South edge element code. </P>
+<P> <B>byte 7 - <I>fences/walls - lower nibble</I></B>: the lower four bits
+(E<SUB>3</SUB>..E<SUB>0</SUB>) of the East edge element code. </P>
+<P> <B>byte 7 -<I> track elements</I></B>: ride index </P>
+<P> <B>byte 7 - <I>surface map elements</I></B>: upper nibble indicates land
+property rights. <BR>
+0 = unowned<BR>
+1, 3 or 5 = construction rights purchased<BR>
+2 = owned<BR>
+4 = construction rights available<BR>
+8 = for sale<BR>
+A = bought <BR>
+<I>i.e.</I><BR>
+bit 0: set if construction rights purchased<BR>
+bit 1: set if owned/purchased<BR>
+bit 2: set if construction rights available<BR>
+bit 3: set if land can be bought</P>
+<P> lower nibble: each bit indicates presence of property boundary fence: bit 0
+= North fence, bit 1 = East fence, bit 2 = South fence, bit 3 = West fence </P>
+<P> </P>
+<HR>
+<H2 ALIGN="Center"> <A NAME="RESEARCH">RESEARCH AREA</A> </H2>
+<P> There are 180 entries of 5 bytes each: </P>
+<TABLE FRAME="BORDER" CELLPADDING="2">
+<TR>
+<TD><P ALIGN="Center"> 0</P>
+</TD>
+<TD><P ALIGN="Center"> 1</P>
+</TD>
+<TD><P ALIGN="Center"> 2</P>
+</TD>
+<TD><P ALIGN="Center"> 3</P>
+</TD>
+<TD><P ALIGN="Center"> 4</P>
+</TD>
+</TR>
+<TR>
+<TD>Research item</TD>
+<TD>corresponding Ride</TD>
+<TD>Research Category</TD>
+<TD>Flag</TD>
+<TD>Research Expenditure Area</TD>
+</TR>
+</TABLE>
+<P> Flag = FF to specify the following limits (Depending on Byte 0): </P>
+<TABLE FRAME="BORDER" CELLPADDING="2">
+<TR>
+<TD>Byte_0</TD>
+<TD></TD>
+</TR>
+<TR>
+<TD><P ALIGN="Center"> FF</P>
+</TD>
+<TD><B>End of Available items</B>. Everything from the beginning to this flag
+is available to the user. Note: Special track/vehicle items may be listed here
+even if the corresponding ride is not available. This is the case when the
+special track/vehicle item is to be made available to the user as soon as the
+corresponding ride becomes available. For example, in some scenarios you may
+have &quot;spining cars for steel mini roller coaster&quot; available as soon
+as the steel mini roller coaster becomes available while in other scenarios you
+would have to research this item.</TD>
+</TR>
+<TR>
+<TD><P ALIGN="Center"> FE</P>
+</TD>
+<TD><B>End of Researchable items</B>. All items which can be researched are
+located between the FF flag and this flag. As items are researched, they are
+moved from this section and placed in the above section.</TD>
+</TR>
+<TR>
+<TD><P ALIGN="Center"> FD</P>
+</TD>
+<TD><B>End of items</B>. Pairs of entries between the FE and FD flag are
+randomly swapped in the above research order table. The swapping takes place
+when the scenario is first loaded.</TD>
+</TR>
+</TABLE>
+<P> </P>
+<P> Flag = 0 for research item entries. </P>
+<TABLE FRAME="BORDER" CELLPADDING="2">
+<TR>
+<TD>Research Category</TD>
+<TD></TD>
+</TR>
+<TR>
+<TD>0 = Theming</TD>
+<TD>'Research Item' contains an index for the &nbsp;<A
+HREF="#THEMING ITEMS">Theming item</A></TD>
+</TR>
+<TR>
+<TD>1 = Rides/Shops</TD>
+<TD>'Research Item' contains an index for the item</TD>
+</TR>
+<TR>
+<TD>2 = Vehicles</TD>
+<TD>'Research Item' contains an index for the <A
+HREF="Vehiclecodes.html">vehicle</A> to go on the
+<A HREF="Ridecodes.html">ride</A> indexed by 'Corresponding Ride'</TD>
+</TR>
+<TR>
+<TD>3 = Specials</TD>
+<TD>'Research Item' contains an index for the <A HREF="#SPECIAL TRACK">special
+track</A> item to go with the <A HREF="Ridecodes.html">ride</A> indexed by
+'Corresponding Ride'</TD>
+</TR>
+</TABLE>
+<P> <B>Research Expenditure Area</B>: Each entry has this code to specify the
+category it is in. The Research menu in the game lets you set check marks to
+specify these areas for research. </P>
+<TABLE FRAME="BORDER" CELLPADDING="2">
+<TR>
+<TD>0</TD>
+<TD>Rollercoasters</TD>
+</TR>
+<TR>
+<TD>1</TD>
+<TD>Thrill Rides</TD>
+</TR>
+<TR>
+<TD>2</TD>
+<TD>Gentle Ride/Transport Rides</TD>
+</TR>
+<TR>
+<TD>3</TD>
+<TD>Shops</TD>
+</TR>
+<TR>
+<TD>4</TD>
+<TD>Scenery/Themeing</TD>
+</TR>
+<TR>
+<TD>5</TD>
+<TD>Ride Improvements</TD>
+</TR>
+</TABLE>
+<P> <A NAME="THEMING ITEMS">Theming Items</A> </P>
+<TABLE FRAME="BORDER" CELLPADDING="2">
+<TR>
+<TD>1</TD>
+<TD>Mine Theme</TD>
+</TR>
+<TR>
+<TD>2</TD>
+<TD>Classical/Roman Theme</TD>
+</TR>
+<TR>
+<TD>3</TD>
+<TD>Egyptian Theme.</TD>
+</TR>
+<TR>
+<TD>4</TD>
+<TD>Martian Theme</TD>
+</TR>
+<TR>
+<TD>5</TD>
+<TD>Jumping Fountains</TD>
+</TR>
+<TR>
+<TD>6</TD>
+<TD>Toyland Theme</TD>
+</TR>
+<TR>
+<TD>7</TD>
+<TD>Jurassic Theme</TD>
+</TR>
+<TR>
+<TD>8</TD>
+<TD>Graveyard Theme</TD>
+</TR>
+<TR>
+<TD>9</TD>
+<TD>Jungle Theme</TD>
+</TR>
+<TR>
+<TD>A</TD>
+<TD>Abstract Theme</TD>
+</TR>
+<TR>
+<TD>B</TD>
+<TD>Garden Clock</TD>
+</TR>
+<TR>
+<TD>C</TD>
+<TD>Snow &amp; Ice</TD>
+</TR>
+<TR>
+<TD>D</TD>
+<TD>Medieval</TD>
+</TR>
+<TR>
+<TD>E</TD>
+<TD>Space</TD>
+</TR>
+<TR>
+<TD>F</TD>
+<TD>Creepy</TD>
+</TR>
+<TR>
+<TD>10</TD>
+<TD>Urban</TD>
+</TR>
+<TR>
+<TD>11</TD>
+<TD>Pagoda</TD>
+</TR>
+</TABLE>
+<P> <A NAME="SPECIAL TRACK">Special Track Types</A> </P>
+<TABLE FRAME="BORDER" CELLPADDING="2">
+<TR>
+<TD>06</TD>
+<TD>Banked Curves*</TD>
+</TR>
+<TR>
+<TD>07</TD>
+<TD>Vertical Loop</TD>
+</TR>
+<TR>
+<TD>0C</TD>
+<TD>Steep Twist*</TD>
+</TR>
+<TR>
+<TD>11</TD>
+<TD>In-Line Twist</TD>
+</TR>
+<TR>
+<TD>12</TD>
+<TD>Half Loop</TD>
+</TR>
+<TR>
+<TD>13</TD>
+<TD>Corkscrew</TD>
+</TR>
+<TR>
+<TD>15,16</TD>
+<TD>Banked Helix*</TD>
+</TR>
+<TR>
+<TD>17</TD>
+<TD>Helix*</TD>
+</TR>
+<TR>
+<TD>1A</TD>
+<TD>On-Ride-Photo*</TD>
+</TR>
+<TR>
+<TD>1B</TD>
+<TD>Water Splash</TD>
+</TR>
+<TR>
+<TD>1C</TD>
+<TD>Vertical Drop*</TD>
+</TR>
+<TR>
+<TD>1D</TD>
+<TD>Barrel Roll*</TD>
+</TR>
+<TR>
+<TD>1E</TD>
+<TD>Launched Lift Hill</TD>
+</TR>
+<TR>
+<TD>1F</TD>
+<TD>Large Loop and Large Half Loop</TD>
+</TR>
+<TR>
+<TD>21</TD>
+<TD>Reverser Turntable</TD>
+</TR>
+<TR>
+<TD>22</TD>
+<TD>Heartline Roll*</TD>
+</TR>
+<TR>
+<TD>23</TD>
+<TD>Reversing Sections*</TD>
+</TR>
+<TR>
+<TD>XX</TD>
+<TD>X</TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>

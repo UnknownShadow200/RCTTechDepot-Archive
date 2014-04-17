@@ -1,0 +1,23 @@
+<HTML>
+<HEAD><TITLE>SC4 file format</TITLE></HEAD>
+<BODY BGCOLOR="#ffffff" BACKGROUND="bkground.jpg">
+<H1 ALIGN="Center">SC4 File Format</H1>
+<H5> <A HREF="index.html">Back to RCT home</A> </H5>
+<P> The SC4 file format is essentially identical to the <A HREF="SV4.html">SV4 file format</A>. There are some minor differences.
+There is one major difference introduced with the first expansion pack. An
+additional encryption method was added. This was apparently intended to impede
+independent developers from creating a scenario editor. It serves no
+programmatic purpose that I can tell. Here is a description of the additional
+processing needed to inspect SC4 files that are intended for the expansion
+pack(s). </P>
+<P> 1) Load the file into memory and perform the usual RLE decoding. </P>
+<P> 2) perform an &quot;<B>XOR with 9C</B>&quot; on every byte from 60018 to
+1F8353. </P>
+<P> 3) perform a &quot;<B>rotate-right-by-3</B>&quot; on the <I>second byte</I>
+and then a &quot;<B>rotate-left-by-9</B>&quot; on every DWORD from 60018 to
+1F8350 </P>
+<P> To go from SV4 to SC4, reverse the above process. (untested) Note: remember
+the <A HREF="Checksum.html">checksum</A> values. </P>
+<P> Here are the <A HREF="scenarios.html">scenario assignments</A>. </P>
+</BODY>
+</HTML>

@@ -1,0 +1,370 @@
+
+<HTML>
+<HEAD><TITLE>TD4 file format</TITLE></HEAD>
+<BODY BGCOLOR="#ffffff" BACKGROUND="bkground.jpg">
+
+<P>
+<P>
+<H1 ALIGN="Center">TD4 File Format</H1>
+<H5><A HREF="index.html">Back to RCT home</A></H5>
+<P>
+The TD4 file stores track design information. The file is in compressed format
+from a <A HREF="RLE.html">Run-Length-Encoding</A> algorithm. The last four
+bytes are a <A HREF="Checksum.html">checksum</A>. The term "RCT" is used
+to refer to the original version of "Roller Coaster Tycoon" while the term
+"AA/CF" is used to refer to the expansion pack titled "Added Attractions"
+in most countries and "Corkscrew Follies" in the United States. Items listed
+as ? have values in some files but I have not determined their meaning.
+&nbsp;The color assignments are listed below. For original RCT, the decoded
+file length is 8058 (decimal) bytes. For "AA/CF" and "Loopy Landscapes",
+the decoded file length is 8198 (decimal) bytes.<BR>
+The decoded format is as follows:
+<P>
+00 <A HREF="Ridecodes.html">Ride type</A><BR>
+01 <A HREF="Vehiclecodes.html">Vehicle type</A> (note: for mazes, the vehicle
+type will be "00")<BR>
+The next four bytes flag "special" track pieces. These pieces are not always
+available to the user as they may not have been researched. These items
+correspond to the <A HREF="menutables.html#Ridefeatures">Ride
+Features</A> table used within the game.<BR>
+02 : bit 7 = vertical loop<BR>
+03 : no bits are "researchable"<BR>
+04 : bit 1=inline twist, bit 2=half loop, bit 3=corkscrew <BR>
+05 : bit 3=water splash, bit 5=barrel roll, bit 6=launched lift hill, bit
+7=large loop <BR>
+06 <A HREF="OperatingModes.html">Operating mode</A><BR>
+07 <A HREF="ColorScheme.html">Vehicle color scheme</A> (scheme in bits 1
+&amp; 0; bit 2 indicates whether this file is in original RCT or the longer
+AA/CF expansion format)<BR>
+08 body color #1<BR>
+09 trim color #1<BR>
+0A body color #2<BR>
+0B trim color #2<BR>
+...<BR>
+1E body color #12<BR>
+1F trim color #12<BR>
+20 track spine color (RCT only, ignored in AA/CF &amp; LL)<BR>
+21 track rail color (RCT only, ignored in AA/CF &amp; LL)<BR>
+22 support color (RCT only, ignored in AA/CF &amp; LL)<BR>
+23 <A HREF="ControlFlags.html">departure control flags</A> <BR>
+24 number of trains<BR>
+25 number of cars per train<BR>
+26 minimum wait time in seconds<BR>
+27 maximum wait time in seconds<BR>
+28 speed (powered launch/chairlift/whoa belly) [1 bit = 3.616 km/hr = 2.25
+mph] -or- number of laps for go-karts -or- maximum number of people (eg.
+maze)<BR>
+29 maximum speed of ride [1 bit = 3.616 km/hr = 2.25 mph]<BR>
+2A average speed of ride [1 bit = 3.616 km/hr = 2.25 mph]<BR>
+2B lower byte of ride length [meters]<BR>
+2C upper byte of ride length [meters]<BR>
+2D positive G-force [1 bit = 0.32g]<BR>
+2E negative G-force [1 bit = 0.32g]<BR>
+2F lateral G-force [1 bit = 0.32g]<BR>
+30 number of inversions [lower 5 bits] - or- number of mini golf holes<BR>
+31 number of drops [lower 6 bits]<BR>
+32 highest drop [1 bit = 1/3 meter ~ 1 foot]<BR>
+33 excitement [divide this by 10]<BR>
+34 intensity [divide this by 10]<BR>
+35 nausea [divide this by 10]<BR>
+36 , 37? &nbsp; (this appears to be a two byte value related to the weight
+of a coaster vehicle) <BR>
+eg: monorail
+<P>
+8 cars: 46 <BR>
+7 cars: 44 <BR>
+6 cars: 42 <BR>
+5 cars: 40<BR>
+4 cars: 3E <BR>
+3 cars: 3C <BR>
+2 cars: 3A <BR>
+1 car: &nbsp;38
+<P>
+<P>
+  <HR>
+<P>
+38 beginning of track data in original RCT format.
+<P>
+The following applies to files saved from the AA/CF or LL expansion pack:
+<P>
+38 spine color 0<BR>
+39 spine color 1<BR>
+3A spine color 2<BR>
+3B spine color 3<BR>
+3C rail color 0<BR>
+3D rail color 1<BR>
+3E rail color 2<BR>
+3F rail color 3<BR>
+40 support color 0 [wall type for mazes: 0=brick, 1=hedge, 2=ice, 3=wooden]<BR>
+41 support color 1<BR>
+42 support color 2<BR>
+43 support color 3<BR>
+44 : ?: 02 = reverser track present in log flume
+<P>
+45 to C3 are <I>reserved</I><BR>
+<P>
+  <HR>
+<P>
+C4 beginning of track data in AA/CF format.
+<P>
+<P>
+  <HR>
+<H2 ALIGN="Center">
+  TRACK DATA
+</H2>
+<P>
+There are two formats that I know of: one for <A HREF="Mazes.html">mazes</A>
+and one for everything else (coasters, trains, cars etc.) The "coaster" format
+is as follows:
+<P>
+Each track element has two bytes. The first byte indicates the type of
+<A HREF="Trackelements.html">track segment</A> while the second byte is a
+<A HREF="TrackQualifier.html">qualifier</A>. The track data concludes when
+a value of "FF" is encountered for the track segment. The remainder of the
+file is filled with 00's.
+<P>
+<P>
+  <HR>
+<H2 ALIGN="Center">
+  RIDE COLORS
+</H2>
+<P>
+All numbers are in hex
+<TABLE FRAME="BORDER">
+  <TR>
+    <TD>Code</TD>
+    <TD><P ALIGN="Center">
+      R</TD>
+    <TD><P ALIGN="Center">
+      G</TD>
+    <TD><P ALIGN="Center">
+      B</TD>
+    <TD>&nbsp; &nbsp; &nbsp;</TD>
+  </TR>
+  <TR>
+    <TD>00</TD>
+    <TD>2F</TD>
+    <TD>40</TD>
+    <TD>3F</TD>
+    <TD BGCOLOR="3F403F"></TD>
+  </TR>
+  <TR>
+    <TD>01</TD>
+    <TD>6F</TD>
+    <TD>80</TD>
+    <TD>7F</TD>
+    <TD BGCOLOR="6F807F"></TD>
+  </TR>
+  <TR>
+    <TD>02</TD>
+    <TD>B0</TD>
+    <TD>C0</TD>
+    <TD>BF</TD>
+    <TD BGCOLOR="B0C0BF"></TD>
+  </TR>
+  <TR>
+    <TD>03</TD>
+    <TD>70</TD>
+    <TD>77</TD>
+    <TD>AF</TD>
+    <TD BGCOLOR="7077AF"></TD>
+  </TR>
+  <TR>
+    <TD>04</TD>
+    <TD>80</TD>
+    <TD>50</TD>
+    <TD>B0</TD>
+    <TD BGCOLOR="8050B0"></TD>
+  </TR>
+  <TR>
+    <TD>05</TD>
+    <TD>0F</TD>
+    <TD>40</TD>
+    <TD>B0</TD>
+    <TD BGCOLOR="0F40B0"></TD>
+  </TR>
+  <TR>
+    <TD>06</TD>
+    <TD>3F</TD>
+    <TD>87</TD>
+    <TD>DF</TD>
+    <TD BGCOLOR="3F87DF"></TD>
+  </TR>
+  <TR>
+    <TD>07</TD>
+    <TD>20</TD>
+    <TD>90</TD>
+    <TD>8F</TD>
+    <TD BGCOLOR="20908F"></TD>
+  </TR>
+  <TR>
+    <TD>08</TD>
+    <TD>1F</TD>
+    <TD>78</TD>
+    <TD>00</TD>
+    <TD BGCOLOR="1F7800"></TD>
+  </TR>
+  <TR>
+    <TD>09</TD>
+    <TD>4F</TD>
+    <TD>87</TD>
+    <TD>5F</TD>
+    <TD BGCOLOR="4F875F"></TD>
+  </TR>
+  <TR>
+    <TD>0A</TD>
+    <TD>5F</TD>
+    <TD>8F</TD>
+    <TD>30</TD>
+    <TD BGCOLOR="5F8F30"></TD>
+  </TR>
+  <TR>
+    <TD>0B</TD>
+    <TD>40</TD>
+    <TD>AF</TD>
+    <TD>20</TD>
+    <TD BGCOLOR="40AF20"></TD>
+  </TR>
+  <TR>
+    <TD>0C</TD>
+    <TD>80</TD>
+    <TD>9F</TD>
+    <TD>5F</TD>
+    <TD BGCOLOR="809F5F"></TD>
+  </TR>
+  <TR>
+    <TD>0D</TD>
+    <TD>80</TD>
+    <TD>88</TD>
+    <TD>30</TD>
+    <TD BGCOLOR="808830"></TD>
+  </TR>
+  <TR>
+    <TD>0E</TD>
+    <TD>D0</TD>
+    <TD>A7</TD>
+    <TD>0F</TD>
+    <TD BGCOLOR="D0A70F"></TD>
+  </TR>
+  <TR>
+    <TD>0F</TD>
+    <TD>8F</TD>
+    <TD>50</TD>
+    <TD>00</TD>
+    <TD BGCOLOR="8F5000"></TD>
+  </TR>
+  <TR>
+    <TD>10</TD>
+    <TD>FF</TD>
+    <TD>6F</TD>
+    <TD>10</TD>
+    <TD BGCOLOR="FF6F10"></TD>
+  </TR>
+  <TR>
+    <TD>11</TD>
+    <TD>B0</TD>
+    <TD>47</TD>
+    <TD>00</TD>
+    <TD BGCOLOR="B04700"></TD>
+  </TR>
+  <TR>
+    <TD>12</TD>
+    <TD>AF</TD>
+    <TD>80</TD>
+    <TD>3F</TD>
+    <TD BGCOLOR="AF803F"></TD>
+  </TR>
+  <TR>
+    <TD>13</TD>
+    <TD>7F</TD>
+    <TD>57</TD>
+    <TD>1F</TD>
+    <TD BGCOLOR="7F571F"></TD>
+  </TR>
+  <TR>
+    <TD>14</TD>
+    <TD>70</TD>
+    <TD>67</TD>
+    <TD>40</TD>
+    <TD BGCOLOR="706740"></TD>
+  </TR>
+  <TR>
+    <TD>15</TD>
+    <TD>CF</TD>
+    <TD>80</TD>
+    <TD>5F</TD>
+    <TD BGCOLOR="CF805F"></TD>
+  </TR>
+  <TR>
+    <TD>16</TD>
+    <TD>9F</TD>
+    <TD>38</TD>
+    <TD>30</TD>
+    <TD BGCOLOR="9F3830"></TD>
+  </TR>
+  <TR>
+    <TD>17</TD>
+    <TD>8F</TD>
+    <TD>00</TD>
+    <TD>00</TD>
+    <TD BGCOLOR="8F0000"></TD>
+  </TR>
+  <TR>
+    <TD>18</TD>
+    <TD>07</TD>
+    <TD>00</TD>
+    <TD>DF</TD>
+    <TD BGCOLOR="DF0007"></TD>
+  </TR>
+  <TR>
+    <TD>19</TD>
+    <TD>D0</TD>
+    <TD>38</TD>
+    <TD>8F</TD>
+    <TD BGCOLOR="D0388F"></TD>
+  </TR>
+  <TR>
+    <TD>1A</TD>
+    <TD>E0</TD>
+    <TD>9F</TD>
+    <TD>9F</TD>
+    <TD BGCOLOR="E09F9F"></TD>
+  </TR>
+  <TR>
+    <TD>1B</TD>
+    <TD>8F</TD>
+    <TD>07</TD>
+    <TD>40</TD>
+    <TD BGCOLOR="8F0740"></TD>
+  </TR>
+  <TR>
+    <TD>1C</TD>
+    <TD>3F</TD>
+    <TD>40</TD>
+    <TD>70</TD>
+    <TD BGCOLOR="3F4070"></TD>
+  </TR>
+  <TR>
+    <TD>1D</TD>
+    <TD>7F</TD>
+    <TD>CF</TD>
+    <TD>CF</TD>
+    <TD BGCOLOR="7FCFCF"></TD>
+  </TR>
+  <TR>
+    <TD>1E</TD>
+    <TD>FF</TD>
+    <TD>E7</TD>
+    <TD>2F</TD>
+    <TD BGCOLOR="FFE72F"></TD>
+  </TR>
+  <TR>
+    <TD>1F</TD>
+    <TD>8F</TD>
+    <TD>D0</TD>
+    <TD>EF</TD>
+    <TD BGCOLOR="8FD0EF"></TD>
+  </TR>
+</TABLE>
+<P>
+</BODY></HTML>

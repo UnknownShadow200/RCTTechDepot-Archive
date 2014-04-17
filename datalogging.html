@@ -1,0 +1,31 @@
+<HTML>
+<HEAD><TITLE>Data Logging</TITLE></HEAD>
+
+<BODY BACKGROUND="bkground.jpg">
+<P><A HREF="SV4.html">Back to SV4 documentation</A> Thanks to Andrew Holupka
+for the following information: </P>
+<H1 ALIGN="Center"> Data Logging Area </H1>
+<P>1CAE44..1F06A3 is the Data Logging Area.</P>
+<P>There are eight structures; each structure is 19,212 bytes. Each structure
+starts with a header to specify which ride is being logged. The header is
+followed by four graph sections. Each section can hold 4800 bytes (5 min *60
+sec/min * 16 bytes/sec). </P>
+<P>Header:<BR>
+0000: index of ride being logged.<BR>
+0001: log mode<BR>
+&nbsp; &nbsp;x00 - not logging.<BR>
+&nbsp; &nbsp;x01 - logging in progress<BR>
+&nbsp; &nbsp;x11 - logging completed (vehicle 1 in station)<BR>
+&nbsp; &nbsp;0xx - log only vel and alt<BR>
+&nbsp; &nbsp;1xx - log all (vel, alt, vert g's and lat g's) </P>
+<P>0002-0005: game time counter (addr 000004 from SV4 data) to indicate when
+the graphs were last viewed.<BR>
+0006-0007: Actual length of each graph section being displayed<BR>
+0008-000B: Current byte of graph section being displayed<BR>
+000C-12CB: data for Vertical G's<BR>
+12CC-258B: data for Lateral G's<BR>
+258C-384B: data for Velocity<BR>
+384C-4B0B: data for Altitude </P>
+</BODY>
+</HTML>
+

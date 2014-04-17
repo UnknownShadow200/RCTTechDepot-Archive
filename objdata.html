@@ -1,0 +1,799 @@
+<HTML>
+<HEAD><TITLE>Object DAT files</TITLE></HEAD>
+<BODY BGCOLOR="#ffffff" BACKGROUND="bkground.jpg">
+
+<H1 ALIGN="Center">Object DAT Files</H1>
+<H5><A HREF="index.html">Back to RCT home</A></H5>
+<P ALIGN="CENTER">
+<FONT COLOR="#FF0000">Last Updated September 18, 2004 </FONT>
+<P>
+<I>Many thanks go to Jonathon Wilson for determing much of the information
+on this page! </I>
+<P>
+The visual items in RCT2 are stored in the g1.dat file in the data directory
+and as individual dat files in the objdata directory.
+<P>
+The dat files begin with a sixteen byte &quot;DAT File Header&quot;. The first four
+bytes are flags. The next eight bytes are the ASCII characters of the file
+name (padded with trailing spaces as needed). The next four bytes are a checksum.
+The DAT File Header is followed by an encoded data chunk. It is the same
+type of encoding as described on the SV6/SC6 page. (The first byte specifies
+the type of encoding; the next four bytes are the size.) The remainder of
+the description here is based on the decoded file. This is a &quot;work in progress&quot;!
+I am using the following model for the Dat file structure:<BR>
+<TABLE BORDER CELLPADDING="2">
+  <TR>
+    <TD><B>DAT File Header</B></TD>
+  </TR>
+  <TR>
+    <TD><B><A HREF="objdata.html#ObjectHeader">Object Header</A></B></TD>
+  </TR>
+  <TR>
+    <TD><A HREF="objdata.html#StringTables"><B>String Table(s)</B></A></TD>
+  </TR>
+  <TR>
+    <TD><B><A HREF="objdata.html#GroupInfo">Group Info</A></B></TD>
+  </TR>
+  <TR>
+    <TD>Optional</TD>
+  </TR>
+  <TR>
+    <TD><B><A HREF="objdata.html#ImageDirectory">Image Directory</A></B></TD>
+  </TR>
+  <TR>
+    <TD>Graphics Data</TD>
+  </TR>
+</TABLE>
+<P>
+The first byte of the DAT File Header contains a flag to identify the type
+of dat file. Use the lower four bits to identify the type (0 through 0x0A)
+of the object. Every object has a DAT File Header, Object Header (different
+for each object type) and a String Table.
+<P>
+<B>DAT File Header:</B> The high nibble of the first byte of the
+<FONT COLOR="#0000ff">Flags</FONT> is used to determine if this is a standard
+(original=8, 1st expansion pack=1) or custom object (high nibble=0). Also,
+the lower four bits of the first byte determine the &quot;Type&quot; of the object
+as described below. The remainder of <FONT COLOR="#0000ff">Flags</FONT> can
+be ignored. The last byte of Flags is 0x00 for RCT2 custom files made with my editor, 0x09 for original RCT2 files, and 0x0C for RCT2 expansion pack files. Custom files made with other programs may have any value at this spot. I highly recommend using 0x00.
+<P>
+<FONT COLOR="#0000ff">Flags : longword <BR>
+filename : 8 bytes <BR>
+checksum : longword</FONT>
+<P>
+The Checksum is calculated by starting with the value 0xF369A75B. Read one
+byte at a time from the decoded file. Start with the first byte of the file,
+then skip the next three bytes. Then read the eight bytes of the Filename.
+Skip the four bytes of the checksum (you're calculating it now!). Then process
+each byte of the remainder of the (decoded) file.
+<P>
+Each byte is processed by XOR'ing it with the low byte of CheckSum. Then
+CheckSum is rotated left by <B>eleven</B> bits. <FONT COLOR="#ff0000">(this
+was errantly listed as thirteen earlier)</FONT>
+<P>
+<TABLE BORDER CELLPADDING="2">
+  <TR>
+    <TD>Object<BR>
+      Type</TD>
+    <TD>Description</TD>
+    <TD>Obj Header<BR>
+      Size</TD>
+    <TD>String Tables</TD>
+    <TD>Group<BR>
+      Info</TD>
+    <TD>&quot;Optional&quot;</TD>
+    <TD>Images</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN=Center>
+      0</TD>
+    <TD>Ride/Shop</TD>
+    <TD>0x1C2</TD>
+    <TD>3</TD>
+    <TD>No</TD>
+    <TD>variable size - It starts with a variable number of 3-byte structures.
+      Start by reading the first byte after the string table. If that&nbsp;byte
+      is 0xFF, then there are 32 structures. Otherwise, that byte is the value
+      of how many 3-byte structures to read.
+      <P>
+      After these, there are four variable length structures. The first byte of
+      each one indicates the length of that structure (not counting the first byte
+      itself). However, if the first byte is 0xFF, use the next <I>two</I> bytes
+      for the length (not counting the <I>three</I> bytes used to indicate length
+      in this case).
+      <P>
+      These four structures specify the loading positions for peeps. There is
+      a&nbsp;byte for each peep position on the ride. The upper and lower nibble
+      specify the X/Y offsets. Some rides have more than one type of vehicle. For
+      example, some rides have less seating in the first vehicle than in subsequent
+      vehicles. Each structure specifies the loading for a vehicle subtype for
+      the ride. For flat rides, the lower 5 bits of the sctructure length specify
+      ? while the remaining upper bits specify ?
+      <P>
+      In the case of shops, there is a single 3-byte structure which contains three
+      bytes of 0x00; while the four other structures are each of zero length.</TD>
+    <TD>Yes</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN=Center>
+      1</TD>
+    <TD>Small Scenery</TD>
+    <TD>0x1C</TD>
+    <TD>1</TD>
+    <TD>Yes</TD>
+    <TD><B>Animation Sequence</B> - presence is conditional; determined by a
+      flag in the Obj Header. Consists of a variable number of bytes to indicate
+      the sequence of animation frames. A 0xFF indicates the end of the sequence.
+      Objects such as gears have a simple up-count sequence. Objects such as the
+      bat statues have an up/down sequence so the wings will spread open - then
+      close smoothly. Some objects have a complicated sequence which involve partial
+      up/down counts within the overall sequence. That allows the butterfly to
+      open and close its wings partially as well as fully for a more interesting
+      animation.</TD>
+    <TD>Yes</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN=Center>
+      2</TD>
+    <TD>large scenery</TD>
+    <TD>0x1A</TD>
+    <TD>1</TD>
+    <TD>Yes</TD>
+    <TD>variable - first is a conditional block of 0x40E bytes if bit 3 of the
+      Obj Header flag is set; this is for the &quot;3D&quot; letters for some of the sign
+      objects in the game. Then, there are a variable number of 9-byte structures.
+      Each structure represents a tile of the object. The structure contains the
+      X, Y, base height and clearance height of the tile. There are also flags
+      to indicate which quadrants are occupied and if walls can be built on the
+      sides. The end of this sequence is signaled by a word of 0xFFFF.</TD>
+    <TD>Yes</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN=Center>
+      3</TD>
+    <TD>Walls</TD>
+    <TD>0x0E</TD>
+    <TD>1</TD>
+    <TD>Yes</TD>
+    <TD>0</TD>
+    <TD>Yes</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN=Center>
+      4</TD>
+    <TD>Path Banners</TD>
+    <TD>0x0C</TD>
+    <TD>1</TD>
+    <TD>Yes</TD>
+    <TD>0</TD>
+    <TD>Yes</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN=Center>
+      5</TD>
+    <TD>Paths</TD>
+    <TD>0x0E</TD>
+    <TD>1</TD>
+    <TD>No</TD>
+    <TD>0</TD>
+    <TD>Yes</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN=Center>
+      6</TD>
+    <TD>Path additions (benches, etc)</TD>
+    <TD>0x0E</TD>
+    <TD>1</TD>
+    <TD>Yes</TD>
+    <TD>0</TD>
+    <TD>Yes</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN=Center>
+      7</TD>
+    <TD>Scenery Group</TD>
+    <TD>0x10E</TD>
+    <TD>1</TD>
+    <TD>No</TD>
+    <TD>variable size - names of assoc files in 16 byte structures:
+      <P>
+      <FONT COLOR="#0000ff">Flag : 4 bytes<BR>
+      Name : 8 bytes<BR>
+      Checksum : 4 bytes</FONT>
+      <P>
+      First byte of flag (0xFF indicates termination -no structure)</TD>
+    <TD>Yes</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN=Center>
+      8</TD>
+    <TD>Park Entrance</TD>
+    <TD>0x08</TD>
+    <TD>1</TD>
+    <TD>No</TD>
+    <TD>0</TD>
+    <TD>Yes</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN=Center>
+      9</TD>
+    <TD>Water</TD>
+    <TD>0x10</TD>
+    <TD>1</TD>
+    <TD>No</TD>
+    <TD>0</TD>
+    <TD>Yes</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN=Center>
+      10</TD>
+    <TD>Scenario text</TD>
+    <TD>0x08</TD>
+    <TD>3</TD>
+    <TD>No</TD>
+    <TD>0</TD>
+    <TD>No</TD>
+  </TR>
+</TABLE>
+<P>
+<B><A NAME="ObjectHeader">Object Header</A>:</B> Following the DAT File Header
+is a &quot;Object Header&quot; which is a different structure (and size) for each object
+type. Here are some Delphi definitions for some of the Object Headers and
+their flags:
+<P>
+<CODE>TType1Header = packed record<BR>
+{00} MsgRef &nbsp; &nbsp; &nbsp; &nbsp;: word; &nbsp; &nbsp; // zero<BR>
+{02} Fill_1 &nbsp; &nbsp; &nbsp; &nbsp;: longword; // zero<BR>
+{06} Flags &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;: longword; // zero<BR>
+{0A} Height &nbsp; &nbsp; &nbsp; &nbsp;: byte;<BR>
+{0B} CursorSel &nbsp; &nbsp; : byte;<BR>
+{0C} BuildFee &nbsp; &nbsp; &nbsp;: smallint;<BR>
+{0E} RemoveFee &nbsp; &nbsp; : smallint;<BR>
+{10} GraphicsStart : longword; // zero in DAT files<BR>
+{14} Anim1 &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;: word; &nbsp; &nbsp; // Delay
+between individual frames of animation - controls speed<BR>
+{16} Anim2 &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;: word; &nbsp; &nbsp; // bits0..4:
+animation counter mask (ie. sequence length - 1)<BR>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// bit 5: 0=continuous animation (sequence
+length should be a power of 2)<BR>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// bit 5: 1=intermittent; bits 6 and up
+indicate interval length<BR>
+{18} Anim3 &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;: word; &nbsp; &nbsp; // Length
+of animation sequence (limit to 0x80)<BR>
+{1A} BaseIndex &nbsp; &nbsp; : byte; &nbsp; &nbsp; // zero in DAT files<BR>
+{1B} Fill_2 &nbsp; &nbsp; &nbsp; &nbsp;: byte; &nbsp; &nbsp; // zero in DAT
+files<BR>
+end;</CODE>
+<P>
+<TABLE BORDER CELLPADDING="2">
+  <TR>
+    <TD>Flag Name</TD>
+    <TD>Hex Value</TD>
+    <TD>Description</TD>
+  </TR>
+  <TR>
+    <TD>T1_FULLSQUARE</TD>
+    <TD><CODE>00000001</CODE></TD>
+    <TD>Full square tile (else: a quarter tile object)</TD>
+  </TR>
+  <TR>
+    <TD>T1_OFFSET</TD>
+    <TD><CODE>00000002</CODE></TD>
+    <TD>Image vertical reference is based on the center of the tile (else: it
+      is based on the top of the tile)</TD>
+  </TR>
+  <TR>
+    <TD>T1_FLAT</TD>
+    <TD><CODE>00000004</CODE></TD>
+    <TD>Must be on a flat surface. Also, walls can't occupy the same tile</TD>
+  </TR>
+  <TR>
+    <TD>T1_RARROW</TD>
+    <TD><CODE>00000008</CODE></TD>
+    <TD>Provide a rotation button in the scenery dialog</TD>
+  </TR>
+  <TR>
+    <TD>T1_ANIMATION</TD>
+    <TD><CODE>00000010</CODE></TD>
+    <TD>Animated object = multiple frames and animation sequence present</TD>
+  </TR>
+  <TR>
+    <TD>T1_GARDEN_DRAW</TD>
+    <TD><CODE>00000020</CODE></TD>
+    <TD>garden draw logic - three frames which progress over time without water
+      (wither)</TD>
+  </TR>
+  <TR>
+    <TD>T1_GARDEN_UNK</TD>
+    <TD><CODE>00000040</CODE></TD>
+    <TD>garden draw logic - the frames can regress with water (allows handymen
+      to water them)</TD>
+  </TR>
+  <TR>
+    <TD>T1_DRAW2DIALOG</TD>
+    <TD><CODE>00000080</CODE></TD>
+    <TD>Combine the first 2 frames when drawing the item in the scenery dialog</TD>
+  </TR>
+  <TR>
+    <TD>T1_SPACEA</TD>
+    <TD><CODE>00000100</CODE></TD>
+    <TD>Diagonal object - check T1_SPACEC</TD>
+  </TR>
+  <TR>
+    <TD>T1_GLASS</TD>
+    <TD><CODE>00000200</CODE></TD>
+    <TD>A &quot;glass&quot; object: the first image is the &quot;frame&quot; and the second image
+      is the &quot;glass&quot;</TD>
+  </TR>
+  <TR>
+    <TD>T1_REMAP_1</TD>
+    <TD><CODE>00000400</CODE></TD>
+    <TD>Uses the first remappable color</TD>
+  </TR>
+  <TR>
+    <TD>T1_1SPRAY</TD>
+    <TD><CODE>00000800</CODE></TD>
+    <TD>Use fountain drawing logic = 2 frames: the first frame is stationary
+      and the second is animated</TD>
+  </TR>
+  <TR>
+    <TD>T1_4SPRAY</TD>
+    <TD><CODE>00001000</CODE></TD>
+    <TD>Use fountain/4 drawing logic = the first frame is stationary; there are
+      &quot;back&quot; and &quot;front&quot; animations (for 4 fountain sprays)</TD>
+  </TR>
+  <TR>
+    <TD>T1_CLOCK</TD>
+    <TD><CODE>00002000</CODE></TD>
+    <TD>Use clock drawing logic = the first frame is stationary; there are two
+      animations (the hands of the clock - which are timed to real time)</TD>
+  </TR>
+  <TR>
+    <TD>T1_SWAMPGOO</TD>
+    <TD><CODE>00004000</CODE></TD>
+    <TD>Use the same image for all 4 views; plus animate 16 frames</TD>
+  </TR>
+  <TR>
+    <TD>T1_ANIMDATA</TD>
+    <TD><CODE>00008000</CODE></TD>
+    <TD>Has animation sequence data (a sequence after the &quot;Group Info&quot;)</TD>
+  </TR>
+  <TR>
+    <TD>T1_DRAW2MAIN</TD>
+    <TD><CODE>00010000</CODE></TD>
+    <TD>This specifies that the object should use 2 frames instead of 1 for the
+      object on the main game screen</TD>
+  </TR>
+  <TR>
+    <TD>T1_STACK</TD>
+    <TD><CODE>00020000</CODE></TD>
+    <TD>Can be stacked and/or placed on water (e.g. trees dont have this bit
+      set)</TD>
+  </TR>
+  <TR>
+    <TD>T1_NOWALLS</TD>
+    <TD><CODE>00040000</CODE></TD>
+    <TD>Specifies that no walls may be built at the same location as this object
+      (can be built below and above)</TD>
+  </TR>
+  <TR>
+    <TD>T1_REMAP_2</TD>
+    <TD><CODE>00080000</CODE></TD>
+    <TD>Uses the second remappable color</TD>
+  </TR>
+  <TR>
+    <TD>T1_NOSUPPORTS</TD>
+    <TD><CODE>00100000</CODE></TD>
+    <TD>No supports - useful for &quot;building&quot; components: walls/roofs, etc</TD>
+  </TR>
+  <TR>
+    <TD>T1_DIALOGFRAMES</TD>
+    <TD><CODE>00200000</CODE></TD>
+    <TD>First set of frames are only for the scenery dialog</TD>
+  </TR>
+  <TR>
+    <TD>T1_SMALL_COG</TD>
+    <TD><CODE>00400000</CODE></TD>
+    <TD>? - only used for the small cogwheel</TD>
+  </TR>
+  <TR>
+    <TD>T1_UNKNOWN</TD>
+    <TD><CODE>00800000</CODE></TD>
+    <TD>? - unknown</TD>
+  </TR>
+  <TR>
+    <TD>T1_SPACEB</TD>
+    <TD><CODE>01000000</CODE></TD>
+    <TD>Occupies half of a tile</TD>
+  </TR>
+  <TR>
+    <TD>T1_SPACEC</TD>
+    <TD><CODE>02000000</CODE></TD>
+    <TD>Occupies 3/4 of a tile - T1_SPACEA must be set also</TD>
+  </TR>
+  <TR>
+    <TD>T1_PAINT_SUPPORTS</TD>
+    <TD><CODE>04000000</CODE></TD>
+    <TD>Supports are painted with the first remappable color (else they are painted
+      black)</TD>
+  </TR>
+  <TR>
+    <TD>T1_POLE</TD>
+    <TD><CODE>08000000</CODE></TD>
+    <TD>? - only used for suppleg1.dat</TD>
+  </TR>
+  <TR>
+    <TD>T1_RESA</TD>
+    <TD><CODE>10000000</CODE></TD>
+    <TD>unused</TD>
+  </TR>
+  <TR>
+    <TD>T1_RESB</TD>
+    <TD><CODE>20000000</CODE></TD>
+    <TD>unused</TD>
+  </TR>
+  <TR>
+    <TD>T1_RESC</TD>
+    <TD><CODE>40000000</CODE></TD>
+    <TD>unused</TD>
+  </TR>
+  <TR>
+    <TD>T1_RESD</TD>
+    <TD><CODE>80000000</CODE></TD>
+    <TD>unused</TD>
+  </TR>
+</TABLE>
+<P>
+<CODE> TType2Header = packed record // Large Scenery : length = 1A<BR>
+{00}reserved0 : word; &nbsp; &nbsp; &nbsp; &nbsp;// Always zero in files<BR>
+{02}reserved1 : longword; &nbsp; &nbsp;// Always zero in files<BR>
+{06}CursorSel : byte;<BR>
+{07}flags &nbsp; &nbsp; : byte; &nbsp; &nbsp; &nbsp;&nbsp; // bit 3 = 3D
+sign<BR>
+{08}BuildFee &nbsp;: word;<BR>
+{0A}RemoveFee : smallint;<BR>
+{0C}reserved2 : longword; &nbsp; &nbsp;// Always zero in files<BR>
+{10}reserved3 : byte; &nbsp; &nbsp; &nbsp; &nbsp;// Always zero in files<BR>
+{11}Scrolling : byte; &nbsp; &nbsp; &nbsp; &nbsp;// 0xFF if not scrolling,
+otherwise, indicates scrolling direction, location<BR>
+{12}reserved4 : longword; &nbsp; &nbsp;// Always zero in files<BR>
+{16}reserved5 : longword; &nbsp; &nbsp;// Always zero in files<BR>
+end;<BR>
+</CODE>
+<TABLE BORDER CELLPADDING="2">
+  <TR>
+    <TD>Flag Name</TD>
+    <TD>Hex Value</TD>
+    <TD>Description</TD>
+  </TR>
+  <TR>
+    <TD>T2_REMAP_1</TD>
+    <TD>01</TD>
+    <TD>uses first color selection</TD>
+  </TR>
+  <TR>
+    <TD>T2_REMAP_2</TD>
+    <TD>02</TD>
+    <TD>uses second color selection</TD>
+  </TR>
+  <TR>
+    <TD>T2_3DTEXT</TD>
+    <TD>04</TD>
+    <TD></TD>
+  </TR>
+  <TR>
+    <TD>T2_SCROLL</TD>
+    <TD>08</TD>
+    <TD>uses standard scrolling text technique</TD>
+  </TR>
+  <TR>
+    <TD>T2_PHOTOGENIC</TD>
+    <TD>10</TD>
+    <TD>guests appreciate the scenery object (and photograph it)</TD>
+  </TR>
+  <TR>
+    <TD>T2_UNUSED_1</TD>
+    <TD>20</TD>
+    <TD>unused</TD>
+  </TR>
+  <TR>
+    <TD>T2_UNUSED_2</TD>
+    <TD>40</TD>
+    <TD>unused</TD>
+  </TR>
+  <TR>
+    <TD>T2_UNUSED_3</TD>
+    <TD>80</TD>
+    <TD>unused</TD>
+  </TR>
+</TABLE>
+<P>
+<CODE> TType2TileSpec = packed record<BR>
+&nbsp;&nbsp;Row &nbsp; &nbsp; &nbsp; : smallint; // div by 32<BR>
+&nbsp;&nbsp;Col &nbsp; &nbsp; &nbsp; : smallint; // div by 32<BR>
+&nbsp;&nbsp;Z &nbsp; &nbsp; &nbsp; &nbsp; : smallint; // div by 16<BR>
+&nbsp;&nbsp;Clearance : byte; &nbsp; &nbsp; // div by 8<BR>
+&nbsp; Unknown1 &nbsp;: byte; &nbsp; &nbsp; // bit 5 is set to indicate no
+supports<BR>
+&nbsp; Flags &nbsp; &nbsp; : byte; &nbsp; &nbsp; // upper nibble=tile occupation
+(F=full tile), lower nibble=walls (0=all sides)<BR>
+end;</CODE>
+<P>
+<CODE><BR>
+</CODE> <CODE>TType3Header = packed record // Walls : length = 14.</CODE>
+<BR>
+<CODE>{00}reserved0 : word; // Always zero in files</CODE> <BR>
+<CODE>{02}reserved1 : longword; // Always zero in files</CODE> <BR>
+<CODE>{06}CursorSel : byte; //</CODE> <BR>
+<CODE>{07}Flags &nbsp; &nbsp; : byte;</CODE> <BR>
+<CODE>{08}Clearance : byte; //</CODE> <BR>
+<CODE>{09}Effects &nbsp; : byte; // first nibble = visibility (0 = opaque),
+upper nibble: 1 = animated (8 frames)</CODE> <BR>
+<CODE>{0A}BuildFee &nbsp;: word; // X 10.</CODE> <BR>
+<CODE>{0C}reserved2 : byte; // Always zero in files</CODE> <BR>
+<CODE>{0D}Scrolling : byte; // 0xFF if not scrolling</CODE> <BR>
+<CODE> end;</CODE>
+<P>
+<TABLE BORDER CELLPADDING="2">
+  <TR>
+    <TD>Flag Name</TD>
+    <TD>Hex Value</TD>
+    <TD>Description</TD>
+  </TR>
+  <TR>
+    <TD>T3_REMAP_1</TD>
+    <TD><CODE>01</CODE></TD>
+    <TD>uses first color selection</TD>
+  </TR>
+  <TR>
+    <TD>T3_GLASS</TD>
+    <TD>02</TD>
+    <TD>combine two frames</TD>
+  </TR>
+  <TR>
+    <TD>T3_FLAT</TD>
+    <TD>04</TD>
+    <TD>if set, cannot be built on sloped land</TD>
+  </TR>
+  <TR>
+    <TD>T3_TWOSIDES</TD>
+    <TD>08</TD>
+    <TD>has a front and a back</TD>
+  </TR>
+  <TR>
+    <TD>T3_DOOR</TD>
+    <TD>10</TD>
+    <TD>special processing for doorways (36 images)</TD>
+  </TR>
+  <TR>
+    <TD>T3_UNUSED</TD>
+    <TD>20</TD>
+    <TD>unused</TD>
+  </TR>
+  <TR>
+    <TD>T3_REMAP_2</TD>
+    <TD>40</TD>
+    <TD>uses second color selection</TD>
+  </TR>
+  <TR>
+    <TD>T3_REMAP_3</TD>
+    <TD>80</TD>
+    <TD>uses third color selection</TD>
+  </TR>
+</TABLE>
+<P>
+<P>
+<CODE>TType4Header = packed record // Banners : length = 12.</CODE> <BR>
+<CODE>{00}reserved0 : word; &nbsp; &nbsp; // always zero</CODE> <BR>
+<CODE>{02}reserved1 : longword; // always zero</CODE> <BR>
+<CODE>{06}Scrolling : byte; &nbsp; &nbsp; // 0xFF if not scrolling, otherwise,
+indicates scrolling direction, location</CODE> <BR>
+<CODE>{07}Flags : byte;</CODE> <BR>
+<CODE>{08}BuildFee : word; &nbsp; &nbsp; &nbsp;// X 10. refund is 75% (rounded
+down)</CODE> <BR>
+<CODE>{0A}reserved2 : word; &nbsp; &nbsp; // always zero</CODE> <BR>
+<CODE> end;</CODE>
+<P>
+<TABLE BORDER CELLPADDING="2">
+  <TR>
+    <TD>Flag Name</TD>
+    <TD>Hex Value</TD>
+    <TD>Description</TD>
+  </TR>
+  <TR>
+    <TD>T4_REMAP_1</TD>
+    <TD>01</TD>
+    <TD>uses first color selection</TD>
+  </TR>
+</TABLE>
+<P>
+<CODE>TType6Header = packed record // Path Additions : length = 14.</CODE>
+<BR>
+<CODE>{00}reserved0 : word; &nbsp; &nbsp; // Always zero in files</CODE>
+<BR>
+<CODE>{02}reserved1 : longword; // Always zero in files</CODE> <BR>
+<CODE>{06}Flags : word;</CODE> <BR>
+<CODE>{08}Subtype : byte;</CODE> <BR>
+<CODE>{09}CursorSel : byte;</CODE> <BR>
+<CODE>{0A}BuildFee : word; &nbsp; &nbsp; &nbsp;// X 10.</CODE> <BR>
+<CODE>{0C}reserved2 : byte; &nbsp; &nbsp; // Always zero in files</CODE>
+<BR>
+<CODE>{0D}unknown1 : byte; &nbsp; &nbsp; &nbsp;// Always zero in files</CODE>
+<BR>
+<CODE> end;</CODE>
+<P>
+<TABLE BORDER CELLPADDING="2">
+  <TR>
+    <TD>Flag Name</TD>
+    <TD>Hex Value</TD>
+    <TD>Description</TD>
+  </TR>
+  <TR>
+    <TD>T6_HOLDTRASH</TD>
+    <TD>0001</TD>
+    <TD>has an extra static frame</TD>
+  </TR>
+  <TR>
+    <TD>T6_CANSIT</TD>
+    <TD>0002</TD>
+    <TD></TD>
+  </TR>
+  <TR>
+    <TD>T6_CANVANDAL</TD>
+    <TD>0004</TD>
+    <TD>has second static frame</TD>
+  </TR>
+  <TR>
+    <TD>T6_LIGHT</TD>
+    <TD>0008</TD>
+    <TD></TD>
+  </TR>
+  <TR>
+    <TD>T6_JUMPFOUNTAIN</TD>
+    <TD>0010</TD>
+    <TD></TD>
+  </TR>
+  <TR>
+    <TD>T6_JUMPSNOWBALL</TD>
+    <TD>0020</TD>
+    <TD></TD>
+  </TR>
+  <TR>
+    <TD>T6_UNKNOWN1</TD>
+    <TD>0040</TD>
+    <TD>set for benches and jumping fountains/snowballs and Litter bins</TD>
+  </TR>
+  <TR>
+    <TD>T6_UNKNOWN2</TD>
+    <TD>0080</TD>
+    <TD>set for benches and jumping fountains/snowballs</TD>
+  </TR>
+  <TR>
+    <TD>T6_QLINETV</TD>
+    <TD>0100</TD>
+    <TD></TD>
+  </TR>
+</TABLE>
+<P>
+Subtypes:
+<P>
+0 = Lamp (edge centered, 1 dialog view, 2 frames of static (normal and
+vandalized)
+<P>
+1 = Litter bin (edge centered/inset, 1 dialog view, 3 frames of static (normal
+and vandalized, and full)
+<P>
+2 = Bench (edge centered/inset, 1 dialog view, 2 frames of static (normal
+and vandalized)
+<P>
+3 = Jump fountain (corners, 1 dialog view, 1 frame of static)
+<P>
+<P>
+  <HR>
+<P>
+<B><A NAME="StringTables">String Table(s)</A></B>: Folowing the Object Header
+is a string table containing text in different languages.Each string begins
+with a byte to specify the language. <BR>
+<TABLE BORDER CELLPADDING="2">
+  <TR>
+    <TD>Code</TD>
+    <TD>Language</TD>
+    <TD>1st Expansion pack</TD>
+  </TR>
+  <TR>
+    <TD>0</TD>
+    <TD>British English</TD>
+    <TD>English</TD>
+  </TR>
+  <TR>
+    <TD>1</TD>
+    <TD>American English</TD>
+    <TD>(not used)</TD>
+  </TR>
+  <TR>
+    <TD>2</TD>
+    <TD>French</TD>
+    <TD>French</TD>
+  </TR>
+  <TR>
+    <TD>3</TD>
+    <TD>German</TD>
+    <TD>German</TD>
+  </TR>
+  <TR>
+    <TD>4</TD>
+    <TD>Spanish</TD>
+    <TD>Spanish</TD>
+  </TR>
+  <TR>
+    <TD>5</TD>
+    <TD>Italian</TD>
+    <TD>Italian</TD>
+  </TR>
+  <TR>
+    <TD>6</TD>
+    <TD>Dutch</TD>
+    <TD>Dutch</TD>
+  </TR>
+  <TR>
+    <TD>7</TD>
+    <TD>Swedish</TD>
+    <TD>Swedish</TD>
+  </TR>
+  <TR>
+    <TD>9</TD>
+    <TD>Korean?</TD>
+    <TD>(not used)</TD>
+  </TR>
+  <TR>
+    <TD>10</TD>
+    <TD>Chinese</TD>
+    <TD>Chinese</TD>
+  </TR>
+  <TR>
+    <TD>11</TD>
+    <TD>Chinese</TD>
+    <TD>(not used)</TD>
+  </TR>
+  <TR>
+    <TD>13</TD>
+    <TD>Portugese</TD>
+    <TD>(not used)</TD>
+  </TR>
+</TABLE>
+<P>
+The string immediately follows that byte and is null terminated. An 0xFF
+for the Language code indicates the end of the strings. Type 0 and 10 objects
+have three string tables; other types have one string table.
+<P>
+<B><A NAME="GroupInfo">Group Info</A></B>: a sixteen byte structure. There
+is a four byte value. This is followed by an eight byte string indicating
+which scenery group file this item belongs to (if any). That is followed
+by a 4-byte value.
+<P>
+<FONT COLOR="#0000ff">Flag : longword (first byte is 0xFF if default item
+- 87 for official groups, 07 for custom groups) <BR>
+FileName : 8 bytes <BR>
+Checksum: longword = 0</FONT>
+<P>
+<B><A NAME="ImageDirectory">Image directory</A></B>: First is a 4-byte value
+which specifies how many images are in the file. Then a 4-byte value which
+specifies the length of the scan line graphic data (starting after the image
+directory). Then there is a sixteen byte entry for each image. It uses the
+same format as the csg1i.dat file of RCT1.
+<P>
+<FONT COLOR="#0000ff">TGraphicRecord = record <BR>
+StartAddress : longword; <BR>
+Width, Height, Xoffset, Yoffset : smallint; // signed two byte variables
+<BR>
+Flags : word; <BR>
+unused : word // to pad the structure to 16 bytes <BR>
+end;</FONT>
+<P>
+StartAddress points to the start of the scan line index in the file. It is
+an offset rather than an absolute address - the first scan line index has
+a StartAddress of 00000000.
+<P>
+</BODY></HTML>

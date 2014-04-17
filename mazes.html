@@ -1,0 +1,25 @@
+<HTML>
+<HEAD><TITLE>Mazes</TITLE></HEAD>
+<BODY BGCOLOR="#ffffff" BACKGROUND="bkground.jpg">
+<H1 ALIGN="Center">Mazes</H1>
+
+<P>
+Each tile in a maze is divided into four sections. Mazes are stored as a
+sequence of four byte elements. Each sequence describes a single tile. The
+first byte is the X-axis position of the tile. The second byte is the Y-axis
+position of the tile. The third and forth bytes are a word with the bits
+mapped as follows:
+<P>
+<IMG SRC="graphics/mazemap.gif" WIDTH="200" HEIGHT="200">
+<P>
+If a bit is set, that part of the maze is solid. The large squares (bits
+3, 7, 11 and 15) are set along with the surrounding bits for a solid section.
+<P>
+The tile which contains the entrance to the maze will have 08 for the fourth
+byte and either 00, 01, 02 or 03 for the third byte, depending on which direction
+it faces.[00 - connects to maze on the entrance's west side; 01 - connects
+on North; 02 - East; 03 - South]
+<P>
+The tile which contains the exit from the maze will have 80 for the forth
+byte and the third byte will be either 00, 01, 02 or 03 as above.
+</BODY></HTML>

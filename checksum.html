@@ -1,0 +1,80 @@
+<HTML>
+<HEAD>
+<TITLE>RCT file checksums</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#ffffff" BACKGROUND="bkground.jpg">
+<P> </P>
+<H1 ALIGN="Center"> RCT FILE CHECKSUMS </H1>
+<H5> <A HREF="index.html">Back to RCT home</A> </H5>
+<P> RollerCoaster Tycoon track files and original RCT use a single checksum
+appended to the end of the RLE encoded data. The expansion pack Added
+Attractions/Corkscrew Follies utilizes and additional checksum which is applied
+to the data while it is not encoded. This page describes the two checksum
+calculations. </P>
+<P> </P>
+<P> The following technique is used to calculate the checksum for the
+<A HREF="RLE.html">RLE encoded</A> files: </P>
+<P> 1) initialize a 32 bit SUMMATION register to zero </P>
+<P> 2) read a byte </P>
+<P> 3) add that byte to the lower 8 bits of the SUMMATION register. Do NOT
+allow a cary into the remaining 24 bits. </P>
+<P> <FONT COLOR="Blue"><SMALL>TEMP = SUMMATION + DATABYTE<BR>
+SUMMATION = (SUMMATION AND FFFFFF00) OR (TEMP AND 000000FF)</SMALL></FONT> </P>
+<P> 4) rotate the SUMMATION register to the left by three bits </P>
+<P> 5) if not end of file, loop back to step 2 </P>
+<P> 6) after the file is completely read (do not read existing checksums)
+modify SUMMATION as follows: </P>
+<TABLE FRAME="BORDER" CELLPADDING="2">
+<TR>
+<TD></TD>
+<TD><P ALIGN="Center"> RCT</P>
+</TD>
+<TD><P ALIGN="Center"> AA/CF</P>
+</TD>
+<TD><P ALIGN="Center"> LL</P>
+</TD>
+</TR>
+<TR>
+<TD>TD4</TD>
+<TD>-108156</TD>
+<TD>-108156</TD>
+<TD>-120001</TD>
+</TR>
+<TR>
+<TD>SV4</TD>
+<TD>+108156</TD>
+<TD>+110001</TD>
+<TD>+120001</TD>
+</TR>
+<TR>
+<TD>SC4</TD>
+<TD>-108156</TD>
+<TD>-110001</TD>
+<TD>-120001</TD>
+</TR>
+</TABLE>
+<P>*A similar technique was reportedly used in TransportTycoon with the value
+105116 for the save file, 201100 for TransportTycoon Deluxe save files and
+-201100 for TTD title.dat</P>
+<P> 7) put the 4 bytes of SUMMATION on the end of the file, least significant
+byte first. </P>
+<P> </P>
+<HR>
+<P> The following technique is used to calculate the &quot;second&quot;
+checksum for the SV4 and SC4 files in the expansion pack. This checksum is
+placed in the last 4 bytes of the data area. </P>
+<P> 1) initialize a 32 bit SUMMATION register to 00000031 </P>
+<P> 2) rotate the SUMMATION register to the left by thirteen bits </P>
+<P> 3) read a byte </P>
+<P> 4) add that byte to the lower 8 bits of the SUMMATION register. Do NOT
+allow a cary into the remaining 24 bits. </P>
+<P> <FONT COLOR="Blue"><SMALL>TEMP = SUMMATION + DATABYTE<BR>
+SUMMATION = (SUMMATION AND FFFFFF00) OR (TEMP AND 000000FF)</SMALL></FONT> </P>
+<P> 5) if not end of file, loop back to step 2 </P>
+<P> 7) put the 4 bytes of SUMMATION in the last four bytes of the data area. 
+</P>
+<P> </P>
+</BODY>
+</HTML>
+

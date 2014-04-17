@@ -1,0 +1,162 @@
+<HTML>
+<HEAD><TITLE>TD6 file format</TITLE></HEAD>
+<BODY BGCOLOR="#ffffff" BACKGROUND="bkground.jpg">
+
+
+<H1 ALIGN="Center">TD6 File Format</H1>
+<P ALIGN="CENTER">
+<FONT COLOR="#FF0000" SIZE="+2"><B>Last updated Jul 7, 2003</B></FONT>
+<H5><BR><A HREF="index.html">Back to RCT home</A></H5>
+
+<P>
+The TD6 file stores RCT2 track design information. The file is in compressed
+format from a <A HREF="RLE.html">Run-Length-Encoding</A> algorithm. The last
+four bytes are a <A HREF="Checksum.html">checksum</A>. The decoded files
+can be either 19,235 or 24,735 bytes long. <BR>
+The decoded format is as follows:
+<P>
+00 <A HREF="ridecodes.html">Track type</A>Note: "Ride" type is determined
+by vehicle type
+<P>
+01: ?
+<P>
+The next four bytes flag "special" track pieces. These pieces are not always
+available to the user as they may not have been researched. These items
+correspond to the <A HREF="Menutables.html" TARGET="RideFeatures">Ride
+Features</A> table used within the game.<BR>
+02 : bit 7 = vertical loop<BR>
+03 : no bits are "researchable"<BR>
+04 : bit 1=inline twist, bit 2=half loop, bit 3=corkscrew <BR>
+05 : bit 3=water splash, bit 5=barrel roll, bit 6=launched lift hill, bit
+7=large loop
+<P>
+06 <A HREF="OperatingModes.html">Operating mode</A><BR>
+07 <A HREF="ColorScheme.html">Vehicle color scheme</A> (scheme in bits 1
+&amp; 0; bit 2 is set for AA/CF, LL files; bit 3 is set for RCT2 files)<BR>
+08..47: 32 sets of two byte color specifiers for vehicles: first byte=body
+color, second byte=trim color
+<P>
+48: ?
+<P>
+49: Entrance style: 0=plain,1=Wooden, 2=Canvas, 3=Castle grey, 4=Castle brown,
+5=Jungle, 6=Log cabin, 7=Classical, 8=Abstract, 9=Snow, A=Pagoda, B=Space
+<P>
+4A: Air Time (multiply by four for the number of seconds)
+<P>
+4B: <A HREF="ControlFlags.html">departure control flags</A> <BR>
+4C number of trains<BR>
+4D number of cars per train<BR>
+4E: minimum wait time in seconds<BR>
+4F: maximum wait time in seconds<BR>
+50: speed (powered launch/chairlift/whoa belly) [1 bit = 3.616 km/hr = 2.25
+mph] -or- number of laps for go-karts -or- maximum number of people (eg.
+maze) <BR>
+51: maximum speed of ride [1 bit = 3.616 km/hr = 2.25 mph]<BR>
+52: average speed of ride [1 bit = 3.616 km/hr = 2.25 mph]<BR>
+53,54: ride length [meters]<BR>
+55: positive G-force [1 bit = 0.32g]<BR>
+56: negative G-force [1 bit = 0.32g]<BR>
+57: lateral G-force [1 bit = 0.32g]<BR>
+58: number of inversions [max = 31]<BR>
+59: number of drops (max = 63)<BR>
+5A: highest drop [1 bit = 3/4 meter]<BR>
+5B: excitement [divide this by 10]<BR>
+5C: intensity [divide this by 10]<BR>
+5D: nausea [divide this by 10]
+<P>
+5E: ?<BR>
+5F: ?
+<P>
+60:track main (spine) color (main color scheme)<BR>
+61:track main (spine) color (1st alt color scheme)<BR>
+62:track main (spine) color (2nd alt color scheme)<BR>
+63:track main (spine) color (3rd alt color scheme)<BR>
+64: track additional (rail) color (main color scheme)<BR>
+65: track additional (rail) color (1st alt color scheme)<BR>
+66: track additional (rail) color (2nd alt color scheme)<BR>
+67: track additional (rail) color (3rd alt color scheme)<BR>
+68: track support color (main color scheme)<BR>
+69: track support color (1st alt color scheme)<BR>
+6A: track support color (2nd alt color scheme)<BR>
+6B: track support color (3rd alt color scheme)
+<P>
+6C: ?: 02 = reverser track present in log flume
+<P>
+6D: ?<BR>
+6E: ?
+<P>
+6F: "Six Flags" design (if MSB set)
+<P>
+<I>Note: 70 through 7F is a DAT file header</I>
+<P>
+70..73: DAT file flags <BR>
+74..7B: <A HREF="Ridecodes.html">vehicle</A> (alphanumeric - 8 characters
+with trailing spaces): <BR>
+7C..7F: DAT file checksum
+<P>
+80,81: map space required (X and Y)<BR>
+82..A1: 32 one-byte color specifiers for vehicles "additional" color <BR>
+A2: low 5 bits = lift chain speed (1.6 kmph bit bit); upper 3 bits = number
+of circuits
+<P>
+A3: beginning of track data
+<P>
+  <HR>
+<H2 ALIGN="Center">
+  TRACK DATA
+</H2>
+<P>
+There are two formats: one for <A HREF="Mazes.html">mazes</A> and one for
+everything else (coasters, trains, cars etc.) The "coaster" format is as
+follows:
+<P>
+Each track element has two bytes. The first byte indicates the type of
+<A HREF="Trackelements.html">track segment</A> while the second byte is a
+<A HREF="TrackQualifier.html">qualifier</A>. The track data concludes when
+a value of "FF" is encountered for the track segment.
+<P>
+<P>
+  <HR>
+<H2 ALIGN="CENTER">
+  SCENERY ITEMS
+</H2>
+<P>
+The track data is followed by three-word structures to specify entrances/exits.
+The first word is flags with bit 7 being set for exits. Bits 0 and 1 specify
+the direction the item points. The next word is the X offset (from the beginning
+of the track), with each tile being 32 units. This is followed by a similar
+value for the Y offset. A value of FF for the first byte indicates the end
+of these structures.
+<P>
+Mazes do not have the station information described above - they simply have
+a double word of zero between the track data and the scenery items described
+next.
+<P>
+Scenery items follow the entrance/exit structures. Scenery items are described
+in a twentytwo byte structure. The end of scenery items is flagged by a FF
+for the first byte.
+<P>
+00: Flag: upper nibble indicates the version of the scenery item (0=custom,
+8=original RCT2, 1=WW, 2=TT). the lower nibble indicates the type of scenery
+object. 1 for single tile item, 2 for multiple tile item, 3 for wall, 5 for
+path/queue, etc
+<P>
+01: ?
+<P>
+02: ?
+<P>
+03: ?
+<P>
+04..0B : text name of corresponding objdat file (ie the name of the scenery
+item)
+<P>
+0C..0F: checksum of DAT file
+<P>
+10: X location (in tiles)<BR>
+11: Y location (in tiles)<BR>
+12: Z location<BR>
+13: bits 0,1: direction; bits 2,3: quadrant - or part of third color<BR>
+14: first color<BR>
+15: second color
+<P>
+</BODY></HTML>

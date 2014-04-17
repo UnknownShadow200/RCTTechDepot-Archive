@@ -1,0 +1,64 @@
+<HTML>
+<HEAD><TITLE>SV6 Game Data</TITLE></HEAD>
+<BODY BGCOLOR="#ffffff" BACKGROUND="bkground.jpg">
+<H1 ALIGN="Center">SV6 Game Data</H1>
+<H5><A HREF="index.html">Back to RCT home</A></H5>
+<P>
+0x000004..271003: ten thousand "Sprite" data structures. Each structure is
+256 (0x100) bytes long.
+<P>
+271006,7: ? Sprite# of next sprite object to be added. (untested)<BR>
+271008,9: ? Sprite# of first vehicle sprite (untested)<BR>
+27100A,B: ? Sprite# of 1st peep sprite (untested)<BR>
+27100C,D: ? Sprite# of 1st duck/moving text sprite (untested)<BR>
+27100E,F: ? Sprite# of 1st trash, vomit sprite (untested)<BR>
+271010,1: Sprite structures available (counts down from 10000) <BR>
+271012,3: ? Count of vehicles in game (untested)<BR>
+271014,5: ? Count of peeps in game (untested)<BR>
+271016,7: ? Count of ducks/moving text (untested)<BR>
+271018,9: ? Count of trash/vomit (untested)
+<P>
+271024..7: Cash
+<P>
+271028..B: Loan
+<P>
+27148C,D: Number of guests in park
+<P>
+2718F8,9: Park Rating (0..999)
+<P>
+271D38..B: Max Loan
+<P>
+271D40: scenario goal: <B>1</B> = #peeps (&amp; park rating), <B>2</B> =
+park value, <B>3</B> = have fun!, <B>4</B> = competition, &nbsp;<B>5</B>
+= ten different coasters with excitement at least 6.00, <B>6</B> = maintain
+park rating &amp; #peeps, <B>7</B> = monthly ride income, <B>8</B> = ten
+different coasters with excitement at least 7.00 and minimum length as specified,
+<B>9</B> = complete five coasters with minimum excitement as specified,
+<B>A</B> = Repay loan and park value, <B>B</B> = monthly profit from food,
+drink and merchandise<BR>
+271D41: number of years to reach goal (10 for competitions)<BR>
+271D42,3: ? <BR>
+271D44..7: money (park value/ride income/sales) goal / coaster excitement
+goal (only for goal type 9)<BR>
+271D48,9: #peeps goal / minimum coaster length (meters)
+<P>
+<P>
+27247C,D: map size
+<P>
+272E52..272E91: Scenario name (null term string)
+<P>
+272E92..272F91: Scenario details (null term string)
+<P>
+272F92: interest rate?
+<P>
+272FB4..27308F: Scenario File name (null term string)
+<P>
+27BADC..27C53B: 83 strings (null term 32 bytes each)
+<P>
+27C540..2A22DF: 255 Ride Structures. Each Structure is 608 (0x260) bytes
+long.
+<P>
+2E439C..2E8377: 61 Message strings. 268 bytes each. Same structure as in
+RCT1
+<P>
+</BODY></HTML>

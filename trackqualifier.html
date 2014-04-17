@@ -1,0 +1,124 @@
+<HTML>
+<HEAD><TITLE>Track Qualifier</TITLE></HEAD>
+<BODY BGCOLOR="#ffffff" BACKGROUND="bkground.jpg">
+<H1 ALIGN="Center">Track Qualifier Byte</H1>
+
+<P>
+The most significant bit of the qualifier byte will be referred to as bit 7.
+<P>
+bit 7 is set to indicate a chain lift <BR>
+bit 6 is set to indicate an inverted track (for flying coasters)
+<P>
+<TABLE BORDER CELLPADDING="2">
+  <TR>
+    <TD>bit 5</TD>
+    <TD>bit 4</TD>
+    <TD><P ALIGN="Center">scheme</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN="Center">0</TD>
+    <TD><P ALIGN="Center">0</TD>
+    <TD>track color scheme 0</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN="Center">0</TD>
+    <TD><P ALIGN="Center">1</TD>
+    <TD>track color scheme 1</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN="Center">1</TD>
+    <TD><P ALIGN="Center">0</TD>
+    <TD>track color scheme 2</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN="Center">1</TD>
+    <TD><P ALIGN="Center">1</TD>
+    <TD>track color scheme 3</TD>
+  </TR>
+</TABLE>
+<P>
+<P>
+The following are two special conditions: Stations: <BR>
+bit 3 is set at a terminal station (departure control applies here) <BR>
+bits 2 reserved <BR>
+bits 1 and 0 identify which station this is (00 =&nbsp;station 1, 01 = station
+2, 10=station 3, 11=station 4)
+<P>
+bits 3, 2, 1 and 0 are a magnitude value (0..15) for brake and booster track
+segments. The value obtained from these four bits is multiplied by 7.6 km/hr
+= 4.5 mph. For RCT2 "Multi Diminsional Coaster", these four bits specify
+the amount of rotation.
+<P>
+<TABLE BORDER CELLPADDING="2">
+  <TR>
+    <TD></TD>
+    <TD>Rotation</TD>
+  </TR>
+  <TR ALIGN="Right">
+    <TD>0000</TD>
+    <TD>-180</TD>
+  </TR>
+  <TR ALIGN="Right">
+    <TD>0001</TD>
+    <TD>-135</TD>
+  </TR>
+  <TR ALIGN="Right">
+    <TD>0010</TD>
+    <TD>-90</TD>
+  </TR>
+  <TR ALIGN="Right">
+    <TD>0011</TD>
+    <TD>-45</TD>
+  </TR>
+  <TR ALIGN="Right">
+    <TD>0100</TD>
+    <TD>0</TD>
+  </TR>
+  <TR ALIGN="Right">
+    <TD>0101</TD>
+    <TD>+45</TD>
+  </TR>
+  <TR ALIGN="Right">
+    <TD>0110</TD>
+    <TD>+90</TD>
+  </TR>
+  <TR ALIGN="Right">
+    <TD>0111</TD>
+    <TD>+135</TD>
+  </TR>
+  <TR ALIGN="Right">
+    <TD>1000</TD>
+    <TD>+180</TD>
+  </TR>
+  <TR ALIGN="Right">
+    <TD>1001</TD>
+    <TD>+225</TD>
+  </TR>
+  <TR ALIGN="Right">
+    <TD>1010</TD>
+    <TD>+270</TD>
+  </TR>
+  <TR ALIGN="Right">
+    <TD>1011</TD>
+    <TD>+315</TD>
+  </TR>
+  <TR ALIGN="Right">
+    <TD>1100</TD>
+    <TD>+360</TD>
+  </TR>
+  <TR ALIGN="Right">
+    <TD>1101</TD>
+    <TD>+405</TD>
+  </TR>
+  <TR ALIGN="Right">
+    <TD>1110</TD>
+    <TD>+450</TD>
+  </TR>
+  <TR ALIGN="Right">
+    <TD>1111</TD>
+    <TD>+495</TD>
+  </TR>
+</TABLE>
+<H2 ALIGN="Center">
+</H2>
+</BODY></HTML>

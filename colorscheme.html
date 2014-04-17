@@ -1,0 +1,39 @@
+<HTML>
+<HEAD><TITLE>Colour Scheme Codes</TITLE></HEAD>
+<BODY BGCOLOR="#ffffff" BACKGROUND="bkground.jpg">
+<H1 ALIGN="Center">Colour Scheme</H1>
+
+<P>
+The lowest two bits contain the code for the color scheme. Bit 2 of this
+byte is set to <B>0</B> in the original RCT. It is set to <B>1</B> in AA/CF
+and this can be used to indicate that this file is larger and that the track
+data starts at a different location.
+<P>
+<TABLE BORDER CELLPADDING="2">
+  <TR ALIGN="CENTER">
+    <TD>bit 1</TD>
+    <TD>bit 0</TD>
+    <TD>color scheme</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN="Center">0</TD>
+    <TD><P ALIGN="Center">0</TD>
+    <TD>All vehicles are the same color</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN="Center">0</TD>
+    <TD><P ALIGN="Center">1</TD>
+    <TD>Trains have different colors</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN="Center">1</TD>
+    <TD><P ALIGN="Center">0</TD>
+    <TD>Each car has different colors</TD>
+  </TR>
+  <TR>
+    <TD><P ALIGN="Center">1</TD>
+    <TD><P ALIGN="Center">1</TD>
+    <TD>not used</TD>
+  </TR>
+</TABLE>
+</BODY></HTML>

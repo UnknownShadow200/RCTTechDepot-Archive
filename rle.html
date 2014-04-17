@@ -1,0 +1,94 @@
+<HTML>
+<HEAD><TITLE>SV4 file format</TITLE></HEAD>
+<BODY BGCOLOR="#ffffff" BACKGROUND="bkground.jpg">
+
+<P>
+<H1 ALIGN="Center"> RUN LENGTH ENCODING / DECODING</H1>
+<H5><A HREF="index.html">Back to RCT home</A></H5>
+<P>
+The TD4 and save game files in RCT are compressed with a Run Length Encoding
+technique. The uncompressed files have a fixed length and contain a lot of
+"00" bytes. The author apparently choose this compression technique to deal
+with those long runs of zeros. The useful data does not compress well with
+this technique but it is quick and simple. The last four bytes of the files
+contain a checksum. When you decode a file, omit these last four bytes. When
+you encode a file, calculate the <A HREF="checksum.html">checksum</A> and
+add those four bytes onto the end of the file. <BR>
+DECODING <BR>
+START <BR>
+1) read a byte (B) from the file <BR>
+2) Test the most significant bit (MSB) of that byte <BR>
+2a) if MSB=0 then B is a counter of how many bytes to copy. Execute the following
+loop: for COUNTER = 1 to B+1 {read a byte from the file and copy it to your
+target data stream.} <BR>
+2b) however, if MSB=1 then B is flag to duplicate data. Read the next byte
+and copy it (-B+1) times to your target data stream. <BR>
+3) if end of file not reached (remember to omit the last four bytes as they
+are a checksum) goto START <BR>
+******************************* <BR>
+For example, imagine a file containing the following data (no checksum) <BR>
+00 47 FF 6F 05 64 20 6A 6F 62 21 <BR>
+The initial 00 indicates that the next 1 byte goes into your target stream:
+"47" <BR>
+The next byte is FF which indicates the next byte should be copied 2 times:
+"6F 6F" <BR>
+The next byte is 05 which indicates the next 6 bytes should go into the target:
+"64 20 6A 6F 62 21" <BR>
+This gives "47 6F 6F 64 20 6A 6F 62 21" which is the ASCII code for "Good
+job!". This example shows how a compressed message of 11 bytes is decompressed
+to a message of 9 bytes. As mentioned, this is not a good technique for general
+compression but it works well for long runs of "00" bytes. <BR>
+To compress a file, just reverse the process. You should limit the copies
+to a maximum of 125 bytes as this is a size limit in the internal RCT program.
+<BR>
+The following is a Delphi unit. It is called with a file name (including
+path) and fills the previously created TMemoryStream object with the decoded
+contents of that file. Although it uses TD4 in the variable names, it will
+work with SV4 files as well. <BR>
+<HR/>
+<BR>
+unit Utils1; <BR>
+<BR>
+interface <BR>
+uses classes; <BR>
+<BR>
+procedure DecodeTD4file(TD4FileName: string; Td4Stream : TMemoryStream);
+<BR>
+<BR>
+implementation <BR>
+<BR>
+procedure DecodeTD4file(TD4FileName: string; Td4Stream : TMemoryStream);
+<BR>
+var FileBuffer : TMemoryStream; <BR>
+Databyte, CopyByte: byte; <BR>
+EncodeByte : shortint; //signed 8-bit number <BR>
+i : integer; <BR>
+begin <BR>
+TD4Stream.clear; <BR>
+FileBuffer := TMemoryStream.create; <BR>
+FileBuffer.LoadFromFile(TD4FileName); <BR>
+FileBuffer.Position := 0; // move to beginning of buffer <BR>
+//the last 4 bytes are a checksum which should not be "decoded" <BR>
+while FileBuffer.Position &lt; (FileBuffer.Size-4) do <BR>
+begin <BR>
+FileBuffer.Read(EncodeByte, 1); // read one byte <BR>
+if (EncodeByte &gt;= 0) <BR>
+then begin {positive value - copy this many bytes} <BR>
+for i:=1 to (EncodeByte+1) do <BR>
+begin <BR>
+FileBuffer.Read(CopyByte, 1); <BR>
+TD4Stream.Write(CopyByte, 1); <BR>
+end; <BR>
+end <BR>
+else begin {negative value - copy next byte this many times} <BR>
+EncodeByte := 1 - EncodeByte; <BR>
+FileBuffer.Read(CopyByte, 1); <BR>
+for i:=1 to EncodeByte do TD4Stream.Write(CopyByte, 1); <BR>
+end; <BR>
+end; <BR>
+FileBuffer.free; <BR>
+end; <BR>
+<BR>
+end.
+</BODY>
+</HTML>

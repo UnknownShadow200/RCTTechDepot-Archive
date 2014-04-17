@@ -1,0 +1,52 @@
+<HTML>
+<HEAD><TITLE>TP4 File Format</TITLE></HEAD>
+
+<BODY BGCOLOR="#ffffff" LINK="#0000ff" VLINK="#800080" BACKGROUND="bkground.jpg">
+<P>
+<H1 ALIGN="CENTER">TP4 File Format</H1>
+<H5><A HREF="index.html">Back to RCT home</A></H5>
+<P>
+The TP4 file contains a bit map image. The file has 52,000 bytes. The file
+contains a 400 byte header followed by the image. The image is 200 pixels
+high by 254 pixels wide. Each row contains 4 flag bytes in addition to the
+data. The header is the same for all files and contains no useful information.
+The values in the header can be generated with the following algorithm.
+<P>
+<FONT COLOR="#0000ff">countby2</FONT> = <FONT COLOR="#ff0000">0x90</FONT>
+&nbsp; <FONT COLOR="#008000">// a single byte variable</FONT><BR>
+<FONT COLOR="#0000ff">countby1</FONT> =
+&nbsp;<FONT COLOR="#ff0000">1</FONT>&nbsp; &nbsp; <FONT COLOR="#008000">//
+a single byte variable</FONT><BR>
+for <FONT COLOR="#0000ff">i</FONT> = <FONT COLOR="#ff0000">1</FONT> to
+<FONT COLOR="#ff0000">200 </FONT>&nbsp; <FONT COLOR="#008000">// loop two
+hundred times</FONT><BR>
+&nbsp; &nbsp; write_one_byte <FONT COLOR="#0000ff">countby2</FONT><BR>
+&nbsp; &nbsp; write_one_byte <FONT COLOR="#0000ff">countby1</FONT> <BR>
+&nbsp; &nbsp; <FONT COLOR="#0000ff">countby2</FONT> =
+<FONT COLOR="#0000ff">countby2</FONT> + <FONT COLOR="#ff0000">2</FONT>
+&nbsp;<FONT COLOR="#008000">// overflow is ignored (0xFE + 2 becomes
+0x00)</FONT><BR>
+&nbsp; &nbsp; if <FONT COLOR="#0000ff">countby2</FONT> =
+<FONT COLOR="#ff0000">0</FONT> <BR>
+<FONT COLOR="#ff0000">&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</FONT>then
+<FONT COLOR="#0000ff">countby1</FONT> = <FONT COLOR="#0000ff">countby1</FONT>
++ <FONT COLOR="#ff0000">2 </FONT><BR>
+&nbsp; &nbsp; &nbsp; &nbsp; else&nbsp;<FONT COLOR="#0000ff">countby1</FONT>
+= <FONT COLOR="#0000ff">countby1</FONT> + <FONT COLOR="#ff0000">1 </FONT><BR>
+<FONT COLOR="#008000">// end of "for loop"</FONT>
+<P>
+The results are: <FONT COLOR="#ff0000">90</FONT>,
+<FONT COLOR="#ff00ff">01</FONT>, <FONT COLOR="#ff0000">92</FONT>,
+<FONT COLOR="#ff00ff">02</FONT>, <FONT COLOR="#ff0000">94</FONT>,
+<FONT COLOR="#ff00ff">03</FONT> ... <FONT COLOR="#ff0000">FE</FONT>,
+<FONT COLOR="#ff00ff">38</FONT>, <FONT COLOR="#ff0000">00</FONT>,
+<FONT COLOR="#ff00ff">3<U>A</U></FONT>, <FONT COLOR="#ff0000">02</FONT>,
+<FONT COLOR="#ff00ff">3B</FONT> ...
+<P>
+Each row of image data begins with a two byte flag: <FONT COLOR="#ff0000">7F
+00</FONT>. After this initial flag, there are 127 pixel values.Then the two
+byte flag <FONT COLOR="#ff0000">FF 7F</FONT> is encountered. After that flag,
+there are another 127 pixel values.This completes a row of 254 pixels. Each
+pixel value is a one-byte <A HREF="Palette.html">palette</A> index.
+<P>
+</BODY></HTML>

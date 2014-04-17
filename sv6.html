@@ -1,0 +1,204 @@
+<HTML>
+<HEAD><TITLE>SV6 &amp; SC6 file format</TITLE></HEAD>
+<BODY BGCOLOR="#ffffff" BACKGROUND="bkground.jpg">
+<H1 ALIGN="Center">SV6 &amp; SC6 FILE FORMAT</H1>
+<H5><A HREF="index.html">Back to RCT home</A></H5>
+
+<P ALIGN="Center"><FONT COLOR="#ff0000">Last updated Dec 15, 2002</FONT><P>
+RCT2 stores the save game information in SV6 files. Scenarios are stored
+in SC6 files. Both file types consist of "chunks" of data. SV6 files contain
+five chunks and SC6 files contain thirteen chunks. Each chunk (except number
+2) starts with a five byte header. The first byte is a code to specify the
+type of encoding used for that chunk. The next four bytes specify the number
+of data bytes in that chunk. The table below describes how the data is coded
+in the chunks. The last four bytes of the file is a simple checksum - formed
+by starting with zero and adding each byte of the file to a 32 bit variable.
+<TABLE ALIGN="CENTER" BORDER="1">
+  <TR>
+    <TD>Code</TD>
+    <TD>Meaining</TD>
+  </TR>
+  <TR>
+    <TD>00</TD>
+    <TD>Copy the data bytes without change.</TD>
+  </TR>
+  <TR>
+    <TD>01</TD>
+    <TD><A HREF="RLE.html">RLE</A></TD>
+  </TR>
+  <TR>
+    <TD>02</TD>
+    <TD><A HREF="RLE.html">RLE</A> , then string decompression</TD>
+  </TR>
+  <TR>
+    <TD>03</TD>
+    <TD>Rotate sequential bytes right by: 1, then 3, then 5, then 7 bits, then
+      1 etc.</TD>
+  </TR>
+</TABLE>
+<P>
+The "String Compression" technique is decoded as follows: read a byte - if
+it is FF then copy the next byte to the output; otherwise, the lower three
+bits indicate the length (add 1) of a string (already in the output data)
+to be copied. The upper five bits are then shifted right (by 3) to become
+an offset to the beginning of the string to be copied. The shifted value
+has thirtytwo subtracted from it to create the offset. For example, A5 would
+indicate a string of 6 bytes to be copied; the string begins twelve bytes
+before the current position.
+<P>
+The following table lists which chunks are present in which file type.
+<TABLE ALIGN="CENTER" BORDER="1">
+  <TR>
+    <TD>Chunk</TD>
+    <TD>SC6</TD>
+    <TD>SV6</TD>
+  </TR>
+  <TR>
+    <TD>0</TD>
+    <TD>Header</TD>
+    <TD>Header</TD>
+  </TR>
+  <TR>
+    <TD>1</TD>
+    <TD>Mystery1</TD>
+    <TD>.</TD>
+  </TR>
+  <TR>
+    <TD>2*</TD>
+    <TD>Import Objects</TD>
+    <TD>Import Objects</TD>
+  </TR>
+  <TR>
+    <TD>3</TD>
+    <TD>Available Items</TD>
+    <TD>Available Items</TD>
+  </TR>
+  <TR>
+    <TD>4</TD>
+    <TD>Flags1</TD>
+    <TD>Flags1</TD>
+  </TR>
+  <TR>
+    <TD>5</TD>
+    <TD>Game Map</TD>
+    <TD>Game Map</TD>
+  </TR>
+  <TR>
+    <TD>6</TD>
+    <TD>Game Data</TD>
+    <TD>Game Data</TD>
+  </TR>
+  <TR>
+    <TD>7</TD>
+    <TD>Flags2</TD>
+    <TD>.</TD>
+  </TR>
+  <TR>
+    <TD>8</TD>
+    <TD>Flags3</TD>
+    <TD>.</TD>
+  </TR>
+  <TR>
+    <TD>9</TD>
+    <TD>Park Rating</TD>
+    <TD>.</TD>
+  </TR>
+  <TR>
+    <TD>10</TD>
+    <TD>Mystery2</TD>
+    <TD>.</TD>
+  </TR>
+  <TR>
+    <TD>11</TD>
+    <TD>Flags5</TD>
+    <TD>.</TD>
+  </TR>
+  <TR>
+    <TD>12</TD>
+    <TD>Flags6</TD>
+    <TD>.</TD>
+  </TR>
+  <TR>
+    <TD>13</TD>
+    <TD>Mystery3</TD>
+    <TD>.</TD>
+  </TR>
+</TABLE>
+<P>
+<B>Header</B>: 32 bytes .
+<P>
+0x00,01: file type (0=SV6, 1=SC6)<BR>
+0x02,03: number of custom objects imbedded
+<P>
+0x04..07: version marker = 120001 (decimal)<BR>
+0x08..0B: ? (SV6=0x00031144, SC6=0x00031132)<BR>
+0x0C..0F: ?<BR>
+0x10..13: ?<BR>
+0x14..17: ?<BR>
+0x18..1B: ?<BR>
+0x1C..1F: ?
+<P>
+<B>Mystery1</B>: 408 bytes - contains scenario description
+<P>
+<B>Import Objects:</B> a sequence of Dat files (custom objects). Does not
+have the 5-byte chunk header.
+<P>
+<B>Available Items</B>: 721 of 16 byte structures (Dat fileheader). Each
+structure has four bytes of flags, then 8 bytes of chars, then a four byte
+checksum.<BR>
+128 entries for the rides<BR>
+252 entries for the small scenery<BR>
+128 entries for the large scenery<BR>
+128 entries for the walls<BR>
+32 entries for the banners<BR>
+16 entries for the paths<BR>
+15 entries for the path bits<BR>
+19 entries for the scenery sets<BR>
+1 entry for the park entrance<BR>
+1 entry for the water<BR>
+1 entry for the "stex" dat file to use
+<P>
+<B>Flags1</B>: 16 bytes
+<P>
+00,01: Month; divide by 8 for years, remainder is month starting at March.
+<P>
+02,03: Day; calculate with: DAY = ((Value*16) div 0x8421)+1
+<P>
+<B>Game Map</B>: 8 byte structure for each map element. Appears to be essentially
+the same as in RCT1. An element type byte, then a byte with continuation
+flag qudrant usage, etc., then a byte for the base height, then a byte for
+the clearance height, ...
+<P>
+<B><A HREF="SV6GameData.html">Game Data</A></B>: all the sprite(actor) structures,
+stats, values, strings, etc. Size = 3048816 in SV6 files, 2560076 (0x27104C)
+in SC6 files.
+<P>
+<B>Flags2</B>: 4 bytes
+<P>
+0,1: Number of guests in park
+<P>
+2,3: ?
+<P>
+<B>Flags3</B>: 8 bytes
+<P>
+<B>Park Rating</B>: 2 bytes=Park Rating (Recent vs. current?)0..999
+<P>
+<B>Mystery2</B>: 1082 bytes
+<P>
+<B>Flags5</B>: 16 bytes
+<P>
+<B>Flags6</B>: 4 bytes
+<P>
+<B>Mystery3</B>: 483816 bytes - remainder of Game Data in SC6 files.
+<P>
+0xF4: map size;
+<P>
+0x104..? : research items. Five byte structures; first byte is index in object
+table (chunk 3); second byte is track type(or zero when "imporovement" item,
+third byte is one as default, zero when "improvement" item; fourth byte is
+zero; fifth byte is research category(0=transport ride, 1=gentle ride,
+2=rollercoaster, 3=thrill ride, 4=water ride, 5=shop, 6=improvement).
+<P>
+<P>
+0x00A1B8..0x02FF57: 255 ride structures of 608 bytes each.
+</BODY></HTML>

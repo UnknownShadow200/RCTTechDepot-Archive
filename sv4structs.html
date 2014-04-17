@@ -1,0 +1,277 @@
+<HTML>
+ 
+<HEAD>
+<TITLE>SV4 structures</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#ffffff" BACKGROUND="bkground.jpg">
+<H1 ALIGN="Center">SV4 Structures</H1>
+<H5> <A HREF="sv4.html">Back to SV4 file format</A> </H5>
+<P> The SV4 file format contains numerous types of structures. This is an incomplete
+document listing information about all the different structures within the SV4 file format.
+Note that every structure is of a fixed size.<BR/>
+All offsets are in <B>hex</B>.</P>
+
+<HR/>
+<H2 ALIGN="Center"> <A NAME="ride">Ride Structure</A> </H2>
+<P> Each ride structure contains 608 bytes. Some of the items are the same as
+described under the <A HREF="td4.html">TD4</A> documentation. </P>
+<P> 000 : <A HREF="ridecodes.html">ride type</A> (FF if not used)<BR>
+001 : <A HREF="vehiclecodes.html">vehicle type</A> <BR>
+002,3 : bit 0 = train(s) on track, bit 1 = tested; bit 2 = test in progress;
+bit 3 = don't show raw stats; bit 4 = pass through station without stopping;
+bit 5 = On-Ride photo; bit 6 = ?; bit 7 = broken down; bit 10 = crashed; bit 12
+= ever been opened; bit 13 = play music; bit 14 = construction/demolition
+prohibited (indestructible ride); bit 15 = demolition prohibited (used when
+there are indestructible track pieces)<BR>
+004 : <A HREF="operatingModes.html">operating mode </A><BR>
+005 : <A HREF="colorScheme.html">color scheme</A> (in original RCT code) 
+<BR>
+006..01D : body and trim colors <BR>
+01E..020 : Track primary, secondary, and support colors (original RCT)<BR>
+021 : ride status - 0 = closed, 1 = open, 2 = test <BR>
+022..023 : <A HREF="textstrings.html">text string</A> index .if MSB of this
+word is set, use lower 10 bits for user defined string index<BR>
+024..027 : string numerator (all 4&nbsp;bytes for guest #, two bytes for
+&quot;rides been on&quot; etc.) 026 is ride # if generic name used<BR>
+028..029 : Final station entry segment(row, col) <BR>
+02A..031 : four sets of row-col bytes for station departure segments<BR>
+032..035 : Station height (one byte for each station)<BR>
+036..039 : Station length (one byte for each station)<BR>
+03A..03D : Station signal (one byte for each station) [80 = green light, the
+lower nibble specifies if train moving through signal, waiting for departure
+control, track not clear, etc.]<BR>
+03E..041 : train in loading position (FF = none) (4 stations)<BR>
+042..049 : four sets of ride Entrance map location (row, col)<BR>
+04A..051 : four sets of ride Exit map location (row, col) <BR>
+052..059 : index (2 bytes) of last peep in queue line at station (4 stations) 
+<BR>
+05A..05D : Num of peeps in queue line (one byte for each station)<BR>
+05E..075 : address of sprite data structure for each train. Set to FF for
+unavailable train numbers.<BR>
+076 :&nbsp;<A HREF="controlFlags.html">departure flags </A><BR>
+077 : # of stations<BR>
+078 : # of trains<BR>
+079 : # of cars per train<BR>
+07A..07B : ? <BR>
+07C : max # of trains for current # of cars<BR>
+07D: ?<BR>
+07E : minimum wait time <BR>
+07F : maximum wait time <BR>
+080 : speed of powered launch/laps/#peeps<BR>
+081..083 : ? <BR>
+084 : index of Data Logging structure (FF if none) <BR>
+085 : special track elements: bits 0 through 4: number of helix sections; bit
+5= spinning tunnel,water splash, rapids; bit 6= log reverser,waterfall; bit 7=
+whirlpool<BR>
+086,087 : ?<BR>
+088,089 : max speed lower word<BR>
+08A,08B : max speed upper word ~2.25 mph per bit<BR>
+08C,8D : avg speed lower word<BR>
+08E,8F : avg speed upper word ~2.25 mph per bit <BR>
+090..93 : ? <BR>
+094..097 : ride length (1st section) - use upper word<BR>
+098..09B : ride length (2nd section) - use upper word<BR>
+09C..09F : ride length (3rd section) - use upper word<BR>
+0A0..0A3 : ride length (4th section) - use upper word<BR>
+0A4, 0A5 : ride time (1st section)<BR>
+0A6, 0A7 : ride time (2nd section)<BR>
+0A8, 0A9 : ride time (3rd section)<BR>
+0AA, 0AB : ride time (4th section)<BR>
+0AC, 0AD : Maximum positive G force<BR>
+0AE, 0AF : Maximum negative G force<BR>
+0B0, 0B1 : Maximum lateral G force<BR>
+0B2..0BD: ?<BR>
+0BE,0BF : ?related to &quot;curvature&quot; of track<BR>
+0C0,0C1 : ?<BR>
+0C2,C3 : ? <BR>
+0C4: num of inversions (lower 5 bits)<BR>
+0C5 : num of drops (lower six bits)<BR>
+C6 : ? <BR>
+0C7 : max drop height (in 1/3 meters ~ 1 ft)<BR>
+0C8..CB : underground track length?<BR>
+CC,CD : ?<BR>
+CE : ?<BR>
+CF..D1 : ? <BR>
+0D2..D3 : ?<BR>
+0D4..D5 : customer per hour (multiply by twelve)<BR>
+0D6..E7 : ? <BR>
+0E8,E9: ticket price<BR>
+0EA..0EF : ? <BR>
+0F0, 0F1 : Excitement (divide by 100) <BR>
+0F2, 0F3 : Intensity (divide by 100) <BR>
+0F4, 0F5 : Nausea (divide by 100) <BR>
+0F6..0F9 : ? <BR>
+0FA : satisfaction (multiply by 5%) (-1 for unknown)<BR>
+0FB..0FF : ? <BR>
+100..103 : total customers <BR>
+104..107 : total profit <BR>
+108 : popularity (multiply by 4) <BR>
+109 : number of guests &quot;thinking&quot; about ride <BR>
+10A : ? <BR>
+10B : #people on ride<BR>
+10C..12F : ?<BR>
+130..131 : Month of construction (used to determine ride age)<BR>
+132, 133 : running cost (multiply by $1.60) <BR>
+134..142 : ? <BR>
+143 : Break Down type: -1=not broken, 0=&quot;safety cut-out&quot;,
+1=&quot;restraints stuck closed&quot;, 2=&quot;restraints stuck open&quot;,
+3=&quot;doors stuck closed&quot;, 4=&quot;doors stuck open&quot;,
+5=&quot;vehicle malfunction&quot;, 6=&quot;station brakes failure&quot;,
+7=&quot;control failure&quot;<BR>
+144..145 : ?<BR>
+146 : Reliability count down - when zero, Reliability is decremented<BR>
+147 : Reliability (%)<BR>
+148: Cheat detection flag? <BR>
+149 : down time (%) <BR>
+14A: Inspection interval (0 = 10 min, 1 = 20 min, 2 = 30 min, 3 = 45 min, 4 = 1
+hr, 5 = 2 hr, 6 = never)&nbsp;<BR>
+14B : time since last inspection (minutes)<BR>
+14C..15F : ? <BR>
+160..163 : Income per hour <BR>
+164..167 :&nbsp;profit <BR>
+168 :&nbsp;queue time <BR>
+169..16B : ?<BR>
+16C..177 :&nbsp;track color schemes <BR>
+178 :&nbsp;music selection (00=Dodgems, 01=Fairground organ, 02=Roman Fanfare,
+03=Oriental, 04=Martian, 05=Jungle Drums, 06=Egyptian, 07=Toyland, 08=?,
+09=Space, 0A=Horror, 0B=Techno, 0C=Gentle, 0D=summer, 0E=water, 0F=Wild West,
+10=Jurassic, 11=Rock, 12=Ragtime, 13=Fantasy<BR>
+179 :&nbsp;station theming (00=standard, 01=wooden, 02=canvas tent,
+03=castle[grey], 04=castle[brown], 05=jungle, 06=log cabin, 07=classical,
+08=abstract, 09=snow, 0A=pagoda, 0B=space) <BR>
+17A..25F : ? </P>
+
+<HR/>
+<H2 ALIGN="Center"> <A NAME="sprite">Sprite Data Structure</A> </H2>
+<P> 256 bytes for each sprite. This data structure is used for peeps, ducks,
+vomit, vehicles (each car of a train, etc.) </P>
+<P> 00 : Sprite Identifier (00=vehicle [includes golfer &amp; golf ball],
+01=peep, 02=duck &amp; 'flying text', 03=vomit/trash, FF=unused)<BR>
+01 : trash type: 0,1=vomit; 2=drink can, 3=fries box, 4=brown?, 5=white?,
+6=purple?, 7=green?<BR>
+02, 03 : Used to remember pointer so that a new members of staff can be put
+back into chains in the same place as sacked members of staff, thus preserving
+the integrity of the Patrol Area Map? <BR>
+04, 05: Pointer to next sprite of this type. (FF FF if end of chain) <BR>
+06, 07: Pointer to previous sprite of this type. (FF FF if beginning of chain) 
+<BR>
+08 (?) 2= test, 4=peep, 6=vehicle</P>
+<P> 09: ?<BR>
+0A,0B : peep data structure counter<BR>
+0C,0D : ?<BR>
+0E,0F : X coordinate (32 units per tile, increases to the East)<BR>
+10,11 : Y coordinate (32 units per tile, increases to the North)<BR>
+12,13 : Z coordinate (16 units per height mark)<BR>
+14..1D : ?<BR>
+1E : Direction sprite is facing<BR>
+1F..21 : ?<BR>
+22,23 : Text string index: 00 &#150; Handyman, 01 &#150; Mechanic, 02 &#150;
+Security, 03 &#150; Entertainer, FF - Guest. - look up custom string if upper
+four bits are: 1000. (use only the lower 10 bits for index into string table).
+If the upper byte is between A0 and DF then it is a &quot;real name&quot; and
+the lower 10 bits indicate the first name while the upper 6 bits are processed
+to determine the last initial. An easy way is to shift the word right by
+10(decimal), then subtract 28(hex). The result will be between zero and fifteen
+and is used to look up a Capital letter. (vowels and less common letters are
+not used)<BR>
+24,25 : next X coordinate for peeps<BR>
+26,27 : next Y coordinate for peeps<BR>
+28,29 : money amount for 'flying text'; speed of vehicles; next Z coordinate
+for peeps<BR>
+2A : ?<BR>
+2B : current state (0=walking, 1=walking*, 2=in line for*, 3=on*, 4=on*,
+5=walking, 6=in line for, 7=on*, 8=sitting, 9=&quot;(select location)&quot;,
+A=walking, B=mowing grass, C=sweeping footpath, D=walking*, E=walking*,
+F=heading for, 10=fixing*, 11=at*, 12=ERROR, &nbsp;[*= pincers inactive]<BR>
+2C : ?<BR>
+2D : peep graphics (0=guest, 1=handyman, 2=mechanic, 3=security, 4=panda,
+5=tiger, 6=elephant, 7=roman, 8=gorilla, 9=snowman, A=Knight, B=Astronaut,
+10=guest w balloon, 11=guest w cotton candy, 12=guest w umbrella, 13=guest w
+pizza?, {14=security}, 15=guest w popcorn,16=guest w arms crossed, 17=guest w
+head down, 18=guest w hand over mouth, 19=green faced guest w hand over mouth,
+1A=guest w hand over crotch, 1B=guest w hat, 1C=guest w burger?, 1D=guest w
+tentacle, 1E=guest w candy apple </P>
+<P> 2E : Guest type: 0=guest, 1=staff<BR>
+2F : # of rides been on<BR>
+30 : Shirt color<BR>
+31 : Pants color for peeps, or, vehicle type<BR>
+32, 33 : vehicles:body and trim color; peeps: x coordinate tile center<BR>
+34, 35 : peeps: y coodinate tile center<BR>
+36, 37 : ?<BR>
+38 : Energy<BR>
+39 : target value for Energy<BR>
+3A : Happiness<BR>
+3B : target value for Happiness<BR>
+3C : Nausea<BR>
+3D : target value for Nausea<BR>
+3E : Hunger (higher value is less hungry)<BR>
+3F : Thirst (higher value is less thirsty)<BR>
+40 : bathroom urgency<BR>
+41..42 : ?<BR>
+43 : preferred ride intensity: upper nibble = max, lower nibble = min<BR>
+44 : nausea tolerance (0=none, 1=low, 2=average, 3=high)<BR>
+45, 47: ?<BR>
+48, 49: ?<BR>
+4A..51: ?<BR>
+52, 53: for vehicles: index of guests in vehicle (thirtytwo word values) FFFF
+if unused<BR>
+54..6D: ?<BR>
+6E : animation type (0 = walking, 10 = sweeping, etc)<BR>
+6F : ?<BR>
+70 : animation sequence; 0=first image of sequence, 1=second image, etc<BR>
+71..73 : ?<BR>
+74, 75 : index of guest in front of this guest while in queue (FFFF if first in
+line)<BR>
+76..79 : ?<BR>
+7A..7B : ?<BR>
+7C..9B : ?<BR>
+9C..9F : peep identifier number (ie. Guest <B>301</B> would have 2D, 01, 00, 00
+at these bytes) <BR>
+A0..A3 : cash in pocket <BR>
+A4..A7 : cash spent <BR>
+A8..AB : time that the peep entered the park<BR>
+AC: ?<BR>
+AD: (?) FF for guest, 0 for staff?<BR>
+AE, AF : ?<BR>
+B0..C3 : 5 sets of 4 byte structures listing the peep's thoughts: byte 0 =
+<A HREF="Peepthoughts.html">thought</A>, byte 1 =
+<A HREF="Peepthoughts.html#item">item</A>, byte3,4 = boolean (0 = no thought) 
+</P>
+<P> C4 : ?<BR>
+C5 : attraction headed for<BR>
+C6 : assignments...handyman: bit0=sweep paths, bit1=water gardens, bit2=empty
+trash, bit3=mow; machanic: bit0=inspect, bit1=repair<BR>
+C7 : ride associated with on-ride photo<BR>
+C8 : 8 if 'Tracking' turned On<BR>
+C9..E3 : ?<BR>
+E4,E5 : paid to enter park <BR>
+E6,E7 : spent on rides <BR>
+E8,E9 : spent on food/drinks <BR>
+EA,EB : spent on souveniers <BR>
+EC : items eaten <BR>
+ED : items drunk <BR>
+EE : souveniers bought <BR>
+EF : ? <BR>
+F0 : coupon type: 0=free entry to park, 1 = free ride on ___, 2 = half price
+entry to park, 3=free item ___<BR>
+F1 : ride/item associated with coupon <BR>
+F2 : ? <BR>
+F3 : Vandal flag (0 = normal, not zero= vandal) <BR>
+F4..F5 : ?<BR>
+F6 : balloon color<BR>
+F7 : umbrella color<BR>
+F8 : hat color<BR>
+F9 : favorite ride<BR>
+FA..FB : ?<BR>
+FC : carrying : bit 0=balloon, bit 1=cuddly toy, bit 2=map, bit 3=on-ride
+photo of ___, bit 4=umbrella, bit 5=drink, bit 6=burger, bit 7=fries,<BR>
+FD : carrying : bit 0=ice cream, bit 1=cotton candy, bit 2=empty can, bit
+3=rubbish, bit 4=empty burger box, bit 5=pizza, bit 6=coupon, bit 7=popcorn<BR>
+FE : carrying : bit 0=hot dog, bit 1=tentacle, bit 2=hat, bit 3=candy apple,
+bit 4=T-shirt, bit 5=donut, bit 6=coffee, bit 7=empty cup<BR>
+FF : carrying: bit 0=fried chicken, bit 1=lemonade, bit 2=empty box, bit
+3=empty bottle, bit 4-7 unused<BR>
+</P>
+</BODY>
+</HTML>

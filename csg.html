@@ -1,0 +1,98 @@
+<HTML>
+<HEAD><TITLE>RCT Graphics Files</TITLE></HEAD>
+<BODY BGCOLOR="#ffffff" BACKGROUND="bkground.jpg">
+
+<H1 ALIGN="Center">RCT GRAPHICS FILES</H1>
+<H5><A HREF="index.html">Back to RCT home</A></H5>
+<P>
+Henry Winkelstein has provided invaluable information about the csg1i.dat
+and csg1.dat RollerCoaster Tycoon graphics files. A reproduction of the original
+forum discussion is <A HREF="/web/20130104221643/http://www.strategyplanet.com/rctuk/tid/csg/csg1dat.html">here</A>! I have expanded that
+information some and the material presented here is more complete and, hopefully,
+more understandable. This material is intended for programmers so if you
+don't know the difference between a "word" and a "signed two byte variable"
+then you need to learn some basics before tyring to use this information
+in any way.
+<P>
+The csg1.dat file consists of 16 byte structures as follows (in Delphi code):
+<P>
+<CODE>TGraphicRecord = packed record</CODE><BR>
+<CODE> StartAddress : longword;</CODE><BR>
+<CODE> Width, Height, Xoffset, Yoffset : smallint; // signed two byte
+variables</CODE><BR>
+<CODE> Flags : word; </CODE><BR>
+<CODE> unused : word // to pad the structure to 16 bytes</CODE><BR>
+<CODE>end;</CODE>
+<P>
+The <B>StartAddress</B> is the starting address in csg1.dat for this graphic.
+<B>Width</B> and <B>Height</B> are the width and height of the extracted
+graphic image. <B>Xoffset</B> is the horizontal distance from the "reference
+point" of the graphic to its left edge. Since most of the graphics are for
+isometric tiles, the reference point is usually the base height of the corner
+of the isometric diamond facing the viewer. <B>Yoffset</B> is a similar value
+for the vertical (top) of the graphic. <B>Flags</B> indicates the type of
+graphic contained at this location. Only the lowest nibble (4 bits) is
+significant, mask out the upper twelve bits. A value of 1 indicates a direct
+bitmap image. A value of 5 indicates a compacted bitmap image. A value of
+8 indicates palette definitions.
+<P>
+Note: within the pixel information, a value of 00 indicates "transparent"
+and the remapable colors are indicated by index values in the ranges: 0A
+to 15, CA to D5 and F3 to FE. These are the colors of ride parts that a user
+can select within the game. When the graphic is loaded, the user's color
+selection will determine which palette values are actually used.
+<P>
+<B>Flags</B> = 1: Direct bitmap - Use the Width and Height to scan the bytes
+of csg1.dat the appropriate number of times. Each byte of csg1.dat is a palette
+index for that pixel.
+<P>
+<B>Flags</B> = 5: Compacted bitmap - the <B>StartAddress</B> points to a
+table of row start offsets (word wide). You can jump to
+StartAddress+RowStartOffset0 to start looking at the data. Each row line
+consists of one or more scan elements. Each scan element begins with a two
+byte header. The first byte indicates the number of bytes of data for that
+element. In addition, the MSB of the first byte is a flag. If set, this is
+the last scan element on this row. If not set, there will be another scan
+element following this one. The second byte of the scan element header is
+an offset value. The scan element begins at that offset from the left edge
+of the graphic. Pixels which are skipped are to be "transparent". To illustrate,
+imagine a graphic of a vertical ladder. Most of the scan lines contain
+transparent pixels except for two scan elements of the ladder rails.
+Consequently, there would be two scan elements for such rows. The first might
+be: 04 06 67 7B 7B 61 where the header(04 06) indicates this scan element
+contains four pixels which begin six pixels from the left edge. The pixels
+are to be drawn with the palette colors specified by the palette indices
+67, 7B, 7B, 61. This might be followed be another scan element such as: 84
+16 67 7B 7B 61. The high bit of the first byte is set to indicate that this
+element in the last element on the scan line. In this scan element; there
+are four pixels and they begin twentytwo pixels from the left edge.
+<P>
+<B>Flags</B> = 8: palette entries - <B>Width</B> indicates how many three
+byte entries (Blue, Green, Red) will be obtained. The starting index for
+the palette entries is determined by <B>Xoffset</B>.
+<P>
+Here are the locations of Palette definitions within my version of csg1.dat
+(for LL)
+<P>
+00076569: 236 entries start at: 10<BR>
+0007682D: 236 entries start at: 10<BR>
+00076AF1: 15 entries start at: 16<BR>
+00076B1E: 15 entries start at: 32<BR>
+00076B4B: 15 entries start at: 48<BR>
+00076B78: 15 entries start at: 80<BR>
+00076BA5: 15 entries start at: 96<BR>
+00076BD2: 15 entries start at: 112<BR>
+00076BFF: 15 entries start at: 16<BR>
+00076C2C: 15 entries start at: 32<BR>
+00076C59: 15 entries start at: 48<BR>
+00076C86: 15 entries start at: 80<BR>
+00076CB3: 15 entries start at: 96<BR>
+00076CE0: 15 entries start at: 112<BR>
+00076D0D: 3 entries start at: 144<BR>
+00076D16: 3 entries start at: 160<BR>
+00076D1F: 3 entries start at: 176<BR>
+023627E5: 236 entries start at: 10<BR>
+0236DFA0: 236 entries start at: 10<BR>
+0237C4F4: 236 entries start at: 10<BR>
+023C77B8: 236 entries start at: 10 <BR>
+</BODY></HTML>

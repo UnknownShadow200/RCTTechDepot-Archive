@@ -1,0 +1,301 @@
+<HTML>
+<HEAD><TITLE>TRK file format</TITLE></HEAD>
+<BODY BGCOLOR="#ffffff" BACKGROUND="bkground.jpg">
+<H1 ALIGN="Center">TRK File Format</H1>
+<P ALIGN="CENTER">
+<FONT COLOR="#FF0000" SIZE="+2"><B>Last updated Feb 23, 2005</B></FONT>
+
+<H5><BR><A HREF="index.html">Back to RCT home</A></H5>
+
+<P>
+Note: This is just the first part of the file - I will post more as the rest of the file structure is determined. The TRK file stores RCT3 track design information. The file begins with a header which consists of text based descriptions of data structures used in the game. Most of them do not apply to track files, but they provide some insight to the remainder of the game!</p>
+<div align="left">
+    <table border="1" width="25%" bgcolor="white">
+        <tr><td width="660">Structures Header</td></tr>
+        <tr><td width="660">Prelim Info</td></tr>
+        <tr><td width="660">TrackedRideInstanceSaveHeader</td></tr>
+        <tr><td width="660">eight byte value</td></tr>
+        <tr><td width="660">TrackedRideInstance</td></tr>
+    </table>
+</div>
+<h3>
+Structures Header</h3>
+<P>
+This section describes various data structures used in the game. It begins with a 4 byte value which specifies the number of structure definitions. You will need to loop through the structure definitions. Each structure definition begins with a &quot;Pascal style&quot; string (which is the name of the structure) followed by a four byte value which specifies the number of primary entries in the structure definition. The &quot;Pascal style&quot; strings used in the file begin with a two byte value which specifies the size of the string (not counting those two bytes themselves). For example, the string &quot;Hello&quot; would be represented as:</p>
+<P>
+05 00 48 65 6C 6C 6F</p>
+<P>
+After reading the structure name and number of primary entries, you then need to loop through a (recursive) routine to read the entries. Each entry begins with 2&nbsp;Pascal style strings. The first string is the name of the enty. The second string is the data type of that entry. These strings are followed by two 4-byte values. In most cases, the first value specifies the size (in bytes) of the named entry. However, if the data type is: &quot;<b>array</b>&quot;, &quot;<b>list</b>&quot; or &quot;<b>struct</b>&quot;, then the second value specifies how many sub-entries there are for this entry. For these three data types, you will need to run through another level of a loop with the same routine. That is why this routine needs to be designed for recurssion. The entries can be five or more levels deep.</p>
+<P>
+Note: entries with the data type &quot;string&quot; refer to a slightly different style of string structure with wide (two byte) characters. The length of a string entry in a data structure cannot be determined until the actual structure is interpreted at run time. (And the length contained with the structure definition will be zero.)</p>
+<P>
+For an example of the structures header extracted from a file, go to <a href="TRKheaderdefs.html">TRKheaderdefs.html</a></p>
+<h3>
+Prelim Info</h3>
+<P>
+This is a sixteen byte structure which appears to consist of two four byte values followed by a &quot;managed object pointer&quot; (which is an 8-byte structure. It starts with an index to a list.) The meaning of this entire structure is yet to be determined.</p>
+<h3>TrackedRideInstanceSaveHeader</h3>
+<P>
+This structure is described within the structures header. The description is repeated here in a readable format:</p>
+<P>
+&nbsp;</p>
+<table border="1">
+    <tr>
+        <td width="512" colspan="3">
+            <p>TrackedRideInstanceSaveHeader</p>
+        </td>
+        <td width="660">11</td>
+    </tr>
+    <tr>
+        <td width="660" colspan="2">
+            <p>Cols</p>
+        </td>
+        <td width="660">int32</td>
+        <td width="660">4</td>
+    </tr>
+    <tr>
+        <td width="660" colspan="2">
+            <p>CompletionLevel</p>
+        </td>
+        <td width="660">int32</td>
+        <td width="660">4</td>
+    </tr>
+    <tr>
+        <td width="660" colspan="2">
+            <p>Cost</p>
+        </td>
+        <td width="660">int32</td>
+        <td width="660">4</td>
+    </tr>
+    <tr>
+        <td width="660" colspan="2">
+            <p>NeedScenarioComplete</p>
+        </td>
+        <td width="660">int32</td>
+        <td width="660">4</td>
+    </tr>
+    <tr>
+        <td width="660" colspan="2">
+            <p>RideAssessmentResults</p>
+        </td>
+        <td width="660"><b>struct</b></td>
+        <td width="660">5</td>
+    </tr>
+    <tr>
+        <td width="131">
+            <p>&nbsp;</p>
+        </td>
+        <td width="131">
+            <p>AssessmentIsValid</p>
+        </td>
+        <td width="660">bool</td>
+        <td width="660">1</td>
+    </tr>
+    <tr>
+        <td width="157">
+            <p>&nbsp;</p>
+        </td>
+        <td width="157">
+            <p>AssessmentRatings</p>
+        </td>
+        <td width="660">vector3</td>
+        <td width="660">12</td>
+    </tr>
+    <tr>
+        <td width="157">
+            <p>&nbsp;</p>
+        </td>
+        <td width="157">
+            <p>AssessmentReliability</p>
+        </td>
+        <td width="660">float32</td>
+        <td width="660">4</td>
+    </tr>
+    <tr>
+        <td width="166">
+            <p>&nbsp;</p>
+        </td>
+        <td width="166">
+            <p>AssessmentUnderCover</p>
+        </td>
+        <td width="660">float32</td>
+        <td width="660">4</td>
+    </tr>
+    <tr>
+        <td width="178">
+            <p>&nbsp;</p>
+        </td>
+        <td width="178">
+            <p>AssessmentValue</p>
+        </td>
+        <td width="660">float32</td>
+        <td width="660">4</td>
+    </tr>
+    <tr>
+        <td width="660" colspan="2">
+            <p>Rows</p>
+        </td>
+        <td width="660">int32</td>
+        <td width="660">4</td>
+    </tr>
+    <tr>
+        <td width="660" colspan="2">
+            <p>SavedSelection</p>
+        </td>
+        <td width="660">managedobjectptr</td>
+        <td width="660">8</td>
+    </tr>
+    <tr>
+        <td width="660" colspan="2">
+            <p>TestResults</p>
+        </td>
+        <td width="660"><b>struct</b></td>
+        <td width="660">13</td>
+    </tr>
+    <tr>
+        <td width="327">
+&nbsp;        </td>
+        <td width="327">            <p>AirTime</p>
+</td>
+        <td width="660">float32</td>
+        <td width="660">4</td>
+    </tr>
+    <tr>
+        <td width="327">
+&nbsp;        </td>
+        <td width="327">            <p>AverageSpeed</p>
+</td>
+        <td width="660">float32</td>
+        <td width="660">4</td>
+    </tr>
+    <tr>
+        <td width="327">
+&nbsp;        </td>
+        <td width="327">            <p>HighestDropHeight</p>
+</td>
+        <td width="660">float32</td>
+        <td width="660">4</td>
+    </tr>
+    <tr>
+        <td width="327">
+&nbsp;        </td>
+        <td width="327">            <p>MaxLateralG</p>
+</td>
+        <td width="660">float32</td>
+        <td width="660">4</td>
+    </tr>
+    <tr>
+        <td width="327">
+&nbsp;        </td>
+        <td width="327">            <p>MaxNegativeVerticalG</p>
+</td>
+        <td width="660">float32</td>
+        <td width="660">4</td>
+    </tr>
+    <tr>
+        <td width="327">
+&nbsp;        </td>
+        <td width="327">            <p>MaxPositiveVerticalG</p>
+</td>
+        <td width="660">float32</td>
+        <td width="660">4</td>
+    </tr>
+    <tr>
+        <td width="327">
+&nbsp;        </td>
+        <td width="327">            <p>MaxSpeed</p>
+</td>
+        <td width="660">float32</td>
+        <td width="660">4</td>
+    </tr>
+    <tr>
+        <td width="327">
+&nbsp;        </td>
+        <td width="327">            <p>NDrops</p>
+</td>
+        <td width="660">int32</td>
+        <td width="660">4</td>
+    </tr>
+    <tr>
+        <td width="327">
+&nbsp;        </td>
+        <td width="327">            <p>NInversions</p>
+</td>
+        <td width="660">int32</td>
+        <td width="660">4</td>
+    </tr>
+    <tr>
+        <td width="327">
+&nbsp;        </td>
+        <td width="327">            <p>NLiftHills</p>
+</td>
+        <td width="660">int32</td>
+        <td width="660">4</td>
+    </tr>
+    <tr>
+        <td width="327">
+&nbsp;        </td>
+        <td width="327">            <p>RideLength</p>
+</td>
+        <td width="660">float32</td>
+        <td width="660">4</td>
+    </tr>
+    <tr>
+        <td width="327">
+&nbsp;        </td>
+        <td width="327">            <p>RideTime</p>
+</td>
+        <td width="660">float32</td>
+        <td width="660">4</td>
+    </tr>
+    <tr>
+        <td width="327">
+&nbsp;        </td>
+        <td width="327">            <p>Valid</p>
+</td>
+        <td width="660">int32</td>
+        <td width="660">4</td>
+    </tr>
+    <tr>
+        <td width="660" colspan="2">
+            <p>TrackedRideInstance</p>
+        </td>
+        <td width="660">
+            <p>managedobjectptr</p>
+        </td>
+        <td width="660">8</td>
+    </tr>
+    <tr>
+        <td width="660" colspan="2">
+            <p>TrackedRidePreview</p>
+        </td>
+        <td width="660">
+            <p>managedobjectptr</p>
+        </td>
+        <td width="660">8</td>
+    </tr>
+    <tr>
+        <td width="660" colspan="2">
+            <p>TrackedRideSymbolName</p>
+        </td>
+        <td width="660">string</td>
+        <td width="660">0</td>
+    </tr>
+    <tr>
+        <td width="660" colspan="2">
+            <p><i>TrainSelection</i></p>
+        </td>
+        <td width="660">int32</td>
+        <td width="660">4</td>
+    </tr>
+</table>
+<P>
+Note: The last entry is present is user saved track files but not in the default track files that come with the game.</p>
+
+<P>
+After this structure, there are eight bytes whose purpose is unknown.</p>
+<P>
+Next is a <b>TrackedRideInstance</b>. Check out the definition in <a href="TRKheaderdefs.html"><b>TRKheaderdefs</b></a>.</p>
+<P>
+The data after this point is yet to be determined. Fortunately, the data structures contained within the header section will provide valuable clues as to the data organization.</p>
+</BODY></HTML>

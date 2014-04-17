@@ -1,0 +1,40 @@
+<HTML>
+<HEAD><TITLE>CSS0.DAT file format</TITLE></HEAD>
+
+<BODY BGCOLOR="#ffffff" BACKGROUND="bkground.jpg">
+
+<P> </P>
+<H1 ALIGN="Center"> CSS0.DAT FILE FORMAT </H1>
+<H5><A HREF="index.html">Back to RCT home</A> </H5>
+<P> The css0.dat file stores information about the scenarios. I have only
+inspected the file that I have so I can only presume that all files use the
+same codes. In original RCT, the file was named sc.idx.</P>
+<P>The file is RLE compressed and contains a <A
+HREF="checksum.html">checksum</A>. The version number corresponding to the SV4
+file is used for the checksum. The file is encrypted by adding 39393939 and
+then rotating each DWord right 5 bits.</P>
+<P> 0000..7FFF : 128 entries of 16 bytes each. Contains the name of the
+scenario file in the directory.<BR>
+0800..27FF : 128 entries of 64 bytes each. Contains the name of the scenario. 
+<BR>
+2800..29FF : 128 entries of DWords for the company value (dollars multiplied by
+ten). 80000000 for &quot;not won&quot;<BR>
+2A00..39FF : 128 entries of 32 bytes each. The name of the winner.<BR>
+3A00 : Number of scenarios<BR>
+3A01 : Flag:<I> usu 0; purpose unknown.</I><BR>
+3A02,3 : part of creation time of <B>css1.dat</B> file on your computer -
+second word if original RCT or AA/CF, third word if LL.<BR>
+3A04..3A07 : low DWord of sum of FileSize of all SC4 files in scenarios
+directory.<BR>
+3A08..3A0B : high DWord of sum of FileSize of all SC4 files in scenarios
+directory.<BR>
+3A0C..3A1B : 128 bit flags. A bit is reset whenever the scenario becomes
+available. In original RCT, there were only 32 bits of flags - the remaining 12
+bytes are not present.</P>
+<P>There is also a checksum for the last scenario availability flags. it is
+stored as a DWord at 2CA7 (this is in the area for the name of the winner of
+the MegaPark scenario - since it is a &quot;have fun&quot; scenario, it should
+not have a name entered.</P>
+</BODY>
+</HTML>
+
