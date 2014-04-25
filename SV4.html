@@ -25,7 +25,7 @@ square meters of area; the height marks in the game are 4/3 meters (internal
 units are 1/3 meters). </P>
 <P> 060010..060013: an incrementing counter, two upper bits not used - not used
 as a trigger as far as I can tell </P>
-<P> 060014.. 198813 - <A HREF="sv4structs.html#sprite">sprite data
+<P> 060014.. 198813 - <A HREF="SV4structs.html#sprite">sprite data
 structures</A>. Each structure has 256 bytes. There are 5,000 sprite
 structures. Items stored in these structures include peeps (guest and staff)
 and ride vehicles. Ducks are also stored here. The vomit sprites are also
@@ -72,14 +72,14 @@ prohibit changing &quot;real names&quot; option.</P>
 <P> 198856: ? </P>
 <P> 198857 - Research rate: 0 = none, 1 = minimum, 2 = normal, 3 = maximum </P>
 <P> 198858.. 19885B: ? <BR>
-19885C-198866: <A HREF="Menutables.html#Ridesmenu">Rides Menu</A> <BR>
+19885C-198866: <A HREF="menuTables.html#Ridesmenu">Rides Menu</A> <BR>
 198867..19887B: (reserve area for ride menu) <BR>
-19887C..198887: <A HREF="Menutables.html#Vehiclemenu">Vehicle Menu </A>(similar
+19887C..198887: <A HREF="menuTables.html#Vehiclemenu">Vehicle Menu </A>(similar
 to above ride menu - one bit for each vehicle) <BR>
 198888..19889B: (reserve area for vehicle menu) <BR>
-19889C..1989FF: <A HREF="Menutables.html#Ridefeatures">Ride feature 1</A> table
+19889C..1989FF: <A HREF="menuTables.html#Ridefeatures">Ride feature 1</A> table
 = 89 (decimal) structures of 4 bytes for each <A
-HREF="Ridecodes.html">ride</A>. <BR>
+HREF="rideCodes.html">ride</A>. <BR>
 198A00..198A9B: (reserve area for ride feature table 1) <BR>
 198A9C..198BFF: ride feature table 2 (4 bytes for each ride) <BR>
 198C00..198B9B: (reserve area for ride feature table 2) <BR>
@@ -427,7 +427,7 @@ item indicated.Divide numbers by 10 for display values (dollars, etc.) </P>
 199025: color for handymen<BR>
 199026: color for mechanics<BR>
 199027: color for security guards</P>
-<P> 199028..1990A7: <A HREF="Menutables.html#Scenerymenu">Scenery Menu</A> </P>
+<P> 199028..1990A7: <A HREF="menuTables.html#Scenerymenu">Scenery Menu</A> </P>
 <P> 1990A8: banner menu items: bit 0=standard, 1=jungle, 2=roman, 3=egyptian,
 4=mining, 5=jurrasic, 6=asian,7=snow <BR>
 1990A9: banner menu items: bit 0=space, 1..7=unused<BR>
@@ -617,7 +617,7 @@ etc. Each string is allocated 32 bytes. Names are entered starting at the last
 location (1A387C) and new names are entered in preceeding slots as the user
 creates them. </P>
 <P> 1A389C..1A389F: a game time counter - used to trigger various events </P>
-<P> 1A38A0..1C963F: <A HREF="sv4structs.html#ride">Ride structure</A>. 255
+<P> 1A38A0..1C963F: <A HREF="SV4structs.html#ride">Ride structure</A>. 255
 structures of 608 bytes each </P>
 <P> 1C9640, 1C9641 - a game time counter - not used as a trigger for any events
 as far as I can tell</P>
@@ -687,7 +687,7 @@ banner, fountains, etc) points <BR>
 19,212 bytes each (graphic charts for G's, etc on rides)<BR>
 1F06A4..1F06A7: next guest number<BR>
 1F06A8..1F06A9: another game counter, two upper bits always zero<BR>
-1F06AA..1F431D: <A HREF="patrolarea.html">Patrol areas</A> </P>
+1F06AA..1F431D: <A HREF="patrolArea.html">Patrol areas</A> </P>
 <P>1F431E: ? - has the value 01<BR>
 1F431F: ? - has the value 01<BR>
 1F4320: ? - has the value 01<BR>
@@ -1276,13 +1276,13 @@ HREF="#THEMING ITEMS">Theming item</A></TD>
 <TR>
 <TD>2 = Vehicles</TD>
 <TD>'Research Item' contains an index for the <A
-HREF="Vehiclecodes.html">vehicle</A> to go on the
-<A HREF="Ridecodes.html">ride</A> indexed by 'Corresponding Ride'</TD>
+HREF="vehicleCodes.html">vehicle</A> to go on the
+<A HREF="rideCodes.html">ride</A> indexed by 'Corresponding Ride'</TD>
 </TR>
 <TR>
 <TD>3 = Specials</TD>
 <TD>'Research Item' contains an index for the <A HREF="#SPECIAL TRACK">special
-track</A> item to go with the <A HREF="Ridecodes.html">ride</A> indexed by
+track</A> item to go with the <A HREF="rideCodes.html">ride</A> indexed by
 'Corresponding Ride'</TD>
 </TR>
 </TABLE>
