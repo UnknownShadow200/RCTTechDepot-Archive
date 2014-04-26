@@ -10,7 +10,7 @@
 <P>
 The TD4 file stores track design information. The file is in compressed format
 from a <A HREF="RLE.html">Run-Length-Encoding</A> algorithm. The last four
-bytes are a <A HREF="Checksum.html">checksum</A>. The term "RCT" is used
+bytes are a <A HREF="checksum.html">checksum</A>. The term "RCT" is used
 to refer to the original version of "Roller Coaster Tycoon" while the term
 "AA/CF" is used to refer to the expansion pack titled "Added Attractions"
 in most countries and "Corkscrew Follies" in the United States. Items listed
@@ -20,20 +20,20 @@ file length is 8058 (decimal) bytes. For "AA/CF" and "Loopy Landscapes",
 the decoded file length is 8198 (decimal) bytes.<BR>
 The decoded format is as follows:
 <P>
-00 <A HREF="Ridecodes.html">Ride type</A><BR>
-01 <A HREF="Vehiclecodes.html">Vehicle type</A> (note: for mazes, the vehicle
+00 <A HREF="rideCodes.html">Ride type</A><BR>
+01 <A HREF="vehicleCodes.html">Vehicle type</A> (note: for mazes, the vehicle
 type will be "00")<BR>
 The next four bytes flag "special" track pieces. These pieces are not always
 available to the user as they may not have been researched. These items
-correspond to the <A HREF="menutables.html#Ridefeatures">Ride
+correspond to the <A HREF="menuTables.html#Ridefeatures">Ride
 Features</A> table used within the game.<BR>
 02 : bit 7 = vertical loop<BR>
 03 : no bits are "researchable"<BR>
 04 : bit 1=inline twist, bit 2=half loop, bit 3=corkscrew <BR>
 05 : bit 3=water splash, bit 5=barrel roll, bit 6=launched lift hill, bit
 7=large loop <BR>
-06 <A HREF="OperatingModes.html">Operating mode</A><BR>
-07 <A HREF="ColorScheme.html">Vehicle color scheme</A> (scheme in bits 1
+06 <A HREF="operatingModes.html">Operating mode</A><BR>
+07 <A HREF="colorScheme.html">Vehicle color scheme</A> (scheme in bits 1
 &amp; 0; bit 2 indicates whether this file is in original RCT or the longer
 AA/CF expansion format)<BR>
 08 body color #1<BR>
@@ -46,7 +46,7 @@ AA/CF expansion format)<BR>
 20 track spine color (RCT only, ignored in AA/CF &amp; LL)<BR>
 21 track rail color (RCT only, ignored in AA/CF &amp; LL)<BR>
 22 support color (RCT only, ignored in AA/CF &amp; LL)<BR>
-23 <A HREF="ControlFlags.html">departure control flags</A> <BR>
+23 <A HREF="controlFlags.html">departure control flags</A> <BR>
 24 number of trains<BR>
 25 number of cars per train<BR>
 26 minimum wait time in seconds<BR>
@@ -113,13 +113,13 @@ C4 beginning of track data in AA/CF format.
   TRACK DATA
 </H2>
 <P>
-There are two formats that I know of: one for <A HREF="Mazes.html">mazes</A>
+There are two formats that I know of: one for <A HREF="mazes.html">mazes</A>
 and one for everything else (coasters, trains, cars etc.) The "coaster" format
 is as follows:
 <P>
 Each track element has two bytes. The first byte indicates the type of
 <A HREF="Trackelements.html">track segment</A> while the second byte is a
-<A HREF="TrackQualifier.html">qualifier</A>. The track data concludes when
+<A HREF="trackQualifier.html">qualifier</A>. The track data concludes when
 a value of "FF" is encountered for the track segment. The remainder of the
 file is filled with 00's.
 <P>

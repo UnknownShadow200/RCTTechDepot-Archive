@@ -11,18 +11,18 @@
 <P>
 The TD6 file stores RCT2 track design information. The file is in compressed
 format from a <A HREF="RLE.html">Run-Length-Encoding</A> algorithm. The last
-four bytes are a <A HREF="Checksum.html">checksum</A>. The decoded files
+four bytes are a <A HREF="checksum.html">checksum</A>. The decoded files
 can be either 19,235 or 24,735 bytes long. <BR>
 The decoded format is as follows:
 <P>
-00 <A HREF="ridecodes.html">Track type</A>Note: "Ride" type is determined
+00 <A HREF="rideCodes.html">Track type</A>Note: "Ride" type is determined
 by vehicle type
 <P>
 01: ?
 <P>
 The next four bytes flag "special" track pieces. These pieces are not always
 available to the user as they may not have been researched. These items
-correspond to the <A HREF="Menutables.html" TARGET="RideFeatures">Ride
+correspond to the <A HREF="menuTables.html" TARGET="RideFeatures">Ride
 Features</A> table used within the game.<BR>
 02 : bit 7 = vertical loop<BR>
 03 : no bits are "researchable"<BR>
@@ -30,8 +30,8 @@ Features</A> table used within the game.<BR>
 05 : bit 3=water splash, bit 5=barrel roll, bit 6=launched lift hill, bit
 7=large loop
 <P>
-06 <A HREF="OperatingModes.html">Operating mode</A><BR>
-07 <A HREF="ColorScheme.html">Vehicle color scheme</A> (scheme in bits 1
+06 <A HREF="operatingModes.html">Operating mode</A><BR>
+07 <A HREF="colorScheme.html">Vehicle color scheme</A> (scheme in bits 1
 &amp; 0; bit 2 is set for AA/CF, LL files; bit 3 is set for RCT2 files)<BR>
 08..47: 32 sets of two byte color specifiers for vehicles: first byte=body
 color, second byte=trim color
@@ -43,7 +43,7 @@ color, second byte=trim color
 <P>
 4A: Air Time (multiply by four for the number of seconds)
 <P>
-4B: <A HREF="ControlFlags.html">departure control flags</A> <BR>
+4B: <A HREF="controlFlags.html">departure control flags</A> <BR>
 4C number of trains<BR>
 4D number of cars per train<BR>
 4E: minimum wait time in seconds<BR>
@@ -90,7 +90,7 @@ maze) <BR>
 <I>Note: 70 through 7F is a DAT file header</I>
 <P>
 70..73: DAT file flags <BR>
-74..7B: <A HREF="Ridecodes.html">vehicle</A> (alphanumeric - 8 characters
+74..7B: <A HREF="rideCodes.html">vehicle</A> (alphanumeric - 8 characters
 with trailing spaces): <BR>
 7C..7F: DAT file checksum
 <P>
@@ -106,13 +106,13 @@ A3: beginning of track data
   TRACK DATA
 </H2>
 <P>
-There are two formats: one for <A HREF="Mazes.html">mazes</A> and one for
+There are two formats: one for <A HREF="mazes.html">mazes</A> and one for
 everything else (coasters, trains, cars etc.) The "coaster" format is as
 follows:
 <P>
 Each track element has two bytes. The first byte indicates the type of
 <A HREF="Trackelements.html">track segment</A> while the second byte is a
-<A HREF="TrackQualifier.html">qualifier</A>. The track data concludes when
+<A HREF="trackQualifier.html">qualifier</A>. The track data concludes when
 a value of "FF" is encountered for the track segment.
 <P>
 <P>

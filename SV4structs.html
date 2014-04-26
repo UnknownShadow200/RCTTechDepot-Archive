@@ -15,9 +15,9 @@ All offsets are in <B>hex</B>.</P>
 <HR/>
 <H2 ALIGN="Center"> <A NAME="ride">Ride Structure</A> </H2>
 <P> Each ride structure contains 608 bytes. Some of the items are the same as
-described under the <A HREF="td4.html">TD4</A> documentation. </P>
-<P> 000 : <A HREF="ridecodes.html">ride type</A> (FF if not used)<BR>
-001 : <A HREF="vehiclecodes.html">vehicle type</A> <BR>
+described under the <A HREF="TD4.html">TD4</A> documentation. </P>
+<P> 000 : <A HREF="rideCodes.html">ride type</A> (FF if not used)<BR>
+001 : <A HREF="vehicleCodes.html">vehicle type</A> <BR>
 002,3 : bit 0 = train(s) on track, bit 1 = tested; bit 2 = test in progress;
 bit 3 = don't show raw stats; bit 4 = pass through station without stopping;
 bit 5 = On-Ride photo; bit 6 = ?; bit 7 = broken down; bit 10 = crashed; bit 12
@@ -30,7 +30,7 @@ there are indestructible track pieces)<BR>
 006..01D : body and trim colors <BR>
 01E..020 : Track primary, secondary, and support colors (original RCT)<BR>
 021 : ride status - 0 = closed, 1 = open, 2 = test <BR>
-022..023 : <A HREF="textstrings.html">text string</A> index .if MSB of this
+022..023 : <A HREF="textStrings.html">text string</A> index .if MSB of this
 word is set, use lower 10 bits for user defined string index<BR>
 024..027 : string numerator (all 4&nbsp;bytes for guest #, two bytes for
 &quot;rides been on&quot; etc.) 026 is ride # if generic name used<BR>
