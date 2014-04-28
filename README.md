@@ -6,6 +6,8 @@ In more detail, this repository contains file formats, checksum methods, and enc
 ### Why do pages only show up as HTML source code?
 This repository is not intended to be a live website. Nevertheless, if you clone this repository with git (or the helpful "download zip"), you can explore the pages locally as a website.
 
+Alternatively, you can view a live mirror (thanks LordAro) [here](http://freerct.github.io/RCTTechDepot-Archive/).
+
 ### Credits
 The original content (and the original website) is copyrighted by James Hughes (aka DoctorJ). 
 All credit for the information within these archived pages goes to him and numerous other contributors.
