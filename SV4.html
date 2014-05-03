@@ -82,7 +82,7 @@ to above ride menu - one bit for each vehicle) <BR>
 HREF="rideCodes.html">ride</A>. <BR>
 198A00..198A9B: (reserve area for ride feature table 1) <BR>
 198A9C..198BFF: ride feature table 2 (4 bytes for each ride) <BR>
-198C00..198B9B: (reserve area for ride feature table 2) <BR>
+198C00..198C9B: (reserve area for ride feature table 2) <BR>
 198C9C,198C9D: Number of guests in park <BR>
 198C9E,198C9F: ? </P>
 <P> The following table presents the starting byte of the 4-byte value for the
@@ -433,9 +433,9 @@ item indicated.Divide numbers by 10 for display values (dollars, etc.) </P>
 1990A9: banner menu items: bit 0=space, 1..7=unused<BR>
 1990AA..199107: ? </P>
 <P> 199108,199109: current park rating </P>
-<P> 19910A..199149: historical park rating (for curve) the low byte is in
-19910A through 199129 while the high byte is in 19912A through 199149. &nbsp;an
-FF indicates 'not used' </P>
+<P> 19910A..199129: historical park rating (multiply value by 4 to get approximate actual value). An FF indicates 'not used'</P>
+<P> 19912A..199149: historical number of guests (multiply value by 10 to get approximate actual value). An 'FF' indicates 'not used'.
+Note that RCT internally limits this value to 250. (aka, 2500 guests max in the graph)</P>
 <P> 19914A: Research selection: bit 0=Rollercoasters, bit 1 = Thrill rides, bit
 2 = Gentle rides, bit 3 = Shops/stalls, bit 4 = Theming, bit 5 = Ride
 improvements </P>
@@ -477,11 +477,11 @@ weeks remaining. </P>
 <P> 19956E..199573: 1 Byte for each type of advertising, indicates the
 ride/food associated with the advertising that displays it. </P>
 <P> 199574..199583: ? <BR>
-199584..199783: 128 DWords (previous cash values)<BR>
+199584..199783: 128 DWords (previous cash balance)<BR>
 199784..199787: Recent change in cash <BR>
-199788..19978B: previous recent change in cash multiplied by 7(?) <BR>
-19978C..19978F: sum of &quot;recent changes in cash&quot;<BR>
-199790..199791: ? <BR>
+199788..19978B: Weekly profit <BR>
+19978C..19978F: Sum of previous weekly profit<BR>
+199790..199791: Previous weekly profit count (divide sum by this(if not 0) to get average previous weekly profit?) <BR>
 199792..199793: ? <BR>
 199794..199993: 128 DWords: Weekly Profit over time<BR>
 199994..199997: Park value <BR>
