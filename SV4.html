@@ -455,7 +455,8 @@ of 5 bytes each. Not &nbsp;used in LL (goto 199C9C for LL) <BR>
 19953E..199541: ? <BR>
 199542,199543: Cheat detection: count of owned land <BR>
 199544..199545: ? <BR>
-199546..199547: ?<BR>
+199546..199547: Median recommended park value. (min recommended = value - value / 2, 
+max recommended = value + value / 2)<BR>
 199548..19954B: Max loan amount (divide by 10 to get dollars, etc) <BR>
 19954C..19954D: &quot;cash in pocket&quot; base value for newly generated
 guests. Varies from -$10, base, +$10, +$20. A zero value defaults to $50.<BR>
@@ -636,36 +637,24 @@ depending on the view angle as indicated below: </P>
 <TD>Vert</TD>
 </TR>
 <TR>
-<TD><P ALIGN="Center"> 0</P>
-</TD>
-<TD><P ALIGN="Center"> -</P>
-</TD>
-<TD><P ALIGN="Center"> +</P>
-</TD>
+<TD><P ALIGN="Center"> 0</P></TD>
+<TD><P ALIGN="Center"> -</P></TD>
+<TD><P ALIGN="Center"> +</P></TD>
 </TR>
 <TR>
-<TD><P ALIGN="Center"> 1</P>
-</TD>
-<TD><P ALIGN="Center"> -</P>
-</TD>
-<TD><P ALIGN="Center"> -</P>
-</TD>
+<TD><P ALIGN="Center"> 1</P></TD>
+<TD><P ALIGN="Center"> -</P></TD>
+<TD><P ALIGN="Center"> -</P></TD>
 </TR>
 <TR>
-<TD><P ALIGN="Center"> 2</P>
-</TD>
-<TD><P ALIGN="Center"> +</P>
-</TD>
-<TD><P ALIGN="Center"> -</P>
-</TD>
+<TD><P ALIGN="Center"> 2</P></TD>
+<TD><P ALIGN="Center"> +</P></TD>
+<TD><P ALIGN="Center"> -</P></TD>
 </TR>
 <TR>
-<TD><P ALIGN="Center"> 3</P>
-</TD>
-<TD><P ALIGN="Center"> +</P>
-</TD>
-<TD><P ALIGN="Center"> +</P>
-</TD>
+<TD><P ALIGN="Center"> 3</P></TD>
+<TD><P ALIGN="Center"> +</P></TD>
+<TD><P ALIGN="Center"> +</P></TD>
 </TR>
 </TABLE>
 <P> 1C9648..1CADB7: Animation object locations (includes Park/Ride entry
@@ -707,20 +696,39 @@ banner, fountains, etc) points <BR>
 1F4335: target shade <BR>
 1F4336: rain, 0=none, 1=light, 2=heavy <BR>
 1F4337: target rain </P>
-<P> 1F4338..1F8313: Message area. 61 messages. Each message structure uses 268
-bytes. Current message at 1F4338, then put into last spot (1F8208) and others
-are moved up.<BR>
+
+<P> 1F4338..1F8313: Message area. 61 messages. Each message structure uses 268 bytes. <BR>
+There are 11 slots for current messages starting at 1F4338. There are 50 slots for historical messages.<BR>
+Expired current messages are put into history at either:<BR>
+&nbsp;&nbsp;The first replaceable (pre-game messages which have a month value of 0, such as the 'researched bathroom' message) slot.<BR>
+&nbsp;&nbsp;Otherwise, the last spot (1F8208), pushing up previously stored messages.<BR>
 The first thirteen bytes of each structure are flags. <BR>
 byte 0: Icon (00=[hide message], 01=ride, 02=peep walking, 03=peep walking,
-04=Money (coins), 05=blank, 06=Scenery, 07=CrowdofPeeps, 08=Award, 09=Graph) 
-<BR>
-byte 02,03: associated item (ie ride index, peep thought, peep index)<BR>
-byte 06: how many letters have been displayed<BR>
+04=Money (coins), 05=blank, 06=Research, 07=CrowdOfPeeps, 08=Award, 09=Graph) <BR>
+byte 1: unknown<BR>
+byte 02..05: Message data (incomplete, may be incorrect)<BR>
+&nbsp;&nbsp;For ride messages: <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;byte 02,03: Ride index<BR>
+&nbsp;&nbsp;For peep messages:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;byte 02,03: Peep index<BR>
+&nbsp;&nbsp;For crow of peeps messages:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;byte 02,03: Peep thought?<BR>
+&nbsp;&nbsp;For blank messages<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;byte 02,03: X coordinate of message target. (e.g. 'park fee very cheap' = park entrance x)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;byte 04,05: Y coordinate of message target. (e.g. 'park fee too high' = park entrance y)<BR>
+&nbsp;&nbsp;For research messages:<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;byte 02: Ride type/Vehicle type/Scenery type/Special track type<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;byte 03: Special tracks and trains: ride type this track/train is for<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;byte 04: Research type (03 = special track,
+02 = train/vehicle design, 01 = ride/attraction, 00 = scenery (different icon displayed))<BR>
+byte 06,07: Number of game ticks the message has been displayed for. 
+(also used to determine number of letters displayed?)<BR>
 byte 08: month (div by 8 for year)<BR>
 byte 0A: date: day of month<BR>
 byte 0C: color (90=white, 91=red, 92=green, 93=gold, 94=brown, 95=grey,
 96=blue, 97=purple, 98=beige, 99=pink, 9A=aqua, 9B=tan, 9C=green) <BR>
 byte 0D: null terminated string starts here. (byte value 05 is used to indicate a new line.)</P>
+
 <P> 1F8314..1F8351: Scenario name (not park name) </P>
 <P> 1F8352,3: <A HREF="scenarios.html">Scenario slot number</A> </P>
 <P> 1F8354..1F8357: scenario flags (expansion packs only) bit 12: error while
