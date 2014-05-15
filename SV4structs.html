@@ -65,11 +65,9 @@ unavailable train numbers.<BR>
 5= spinning tunnel,water splash, rapids; bit 6= log reverser,waterfall; bit 7=
 whirlpool<BR>
 086,087 : ?<BR>
-088,089 : max speed lower word<BR>
-08A,08B : max speed upper word ~2.25 mph per bit<BR>
-08C,8D : avg speed lower word<BR>
-08E,8F : avg speed upper word ~2.25 mph per bit <BR>
-090..93 : ? <BR>
+088..08B : max speed ~2.25 mph per bit<BR>
+08C..08F : avg speed ~2.25 mph per bit <BR>
+090..093 : ? <BR>
 094..097 : ride length (1st section) - use upper word<BR>
 098..09B : ride length (2nd section) - use upper word<BR>
 09C..09F : ride length (3rd section) - use upper word<BR>
@@ -94,14 +92,15 @@ CC,CD : ?<BR>
 CE : ?<BR>
 CF..D1 : ? <BR>
 0D2..D3 : ?<BR>
-0D4..D5 : customer per hour (multiply by twelve)<BR>
-0D6..E7 : ? <BR>
+0D4..E7 : 10 Words, customers history. (to calculate 'customers per hour', 
+sum all 10 words, then multiply the sum by 12.)<BR/>
 0E8,E9: ticket price<BR>
 0EA..0EF : ? <BR>
 0F0, 0F1 : Excitement (divide by 100) <BR>
 0F2, 0F3 : Intensity (divide by 100) <BR>
 0F4, 0F5 : Nausea (divide by 100) <BR>
-0F6..0F9 : ? <BR>
+0F6..0F7 : Recommended ticket price <BR>
+0F8..0F9 : ? <BR>
 0FA : satisfaction (multiply by 5%) (-1 for unknown)<BR>
 0FB..0FF : ? <BR>
 100..103 : total customers <BR>
@@ -130,8 +129,7 @@ hr, 5 = 2 hr, 6 = never)&nbsp;<BR>
 14C..15F : ? <BR>
 160..163 : Income per hour <BR>
 164..167 :&nbsp;profit <BR>
-168 :&nbsp;queue time <BR>
-169..16B : ?<BR>
+168..16B :&nbsp;queue times, 1 byte for each station.<BR>
 16C..177 :&nbsp;track color schemes <BR>
 178 :&nbsp;music selection (00=Dodgems, 01=Fairground organ, 02=Roman Fanfare,
 03=Oriental, 04=Martian, 05=Jungle Drums, 06=Egyptian, 07=Toyland, 08=CircusSounds,

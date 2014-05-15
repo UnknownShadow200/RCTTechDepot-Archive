@@ -455,7 +455,7 @@ of 5 bytes each. Not &nbsp;used in LL (goto 199C9C for LL) <BR>
 19953E..199541: ? <BR>
 199542,199543: Cheat detection: count of owned land <BR>
 199544..199545: ? <BR>
-199546..199547: Median recommended park value. (min recommended = value - value / 2, 
+199546..199547: Median recommended park entry fee. (min recommended = value - value / 2, 
 max recommended = value + value / 2)<BR>
 199548..19954B: Max loan amount (divide by 10 to get dollars, etc) <BR>
 19954C..19954D: &quot;cash in pocket&quot; base value for newly generated
@@ -493,7 +493,9 @@ indicated objective not met; if bit 0 set - failed objective<BR>
 199BA0..199BA3: income from admissions <BR>
 199BA4..199BA7: Company Value [<B>cash</B> + <B>park value</B> - <B>loan</B>] 
 <BR>
-199BA8..199BB7: ?<BR>
+199BA8..199BB7: 16 bytes, each is a 1 byte thought timer. When a timer reaches 0, a particular peeps thought is checked (and potentially displayed as a 'crowdofpeeps' message)<BR/>
+(byte 0: "I'm hungry", 1: "I'm thirsty", 2: "I need to go the bathroom", 3: "The litter here is really bad", 4: "This path is disgusting", 
+5: "The vandalism here is really bad", 6: "I'm lost" and "I can't find the park exit", 7-16 unused)<BR>
 199BB8..199BC7: park awards - four structures of 4 bytes each. Each structure
 consists of two words. The first word is a flag to indicate if there is an
 award(zero=no, nonzero = yes); the second word indicates the award/string as

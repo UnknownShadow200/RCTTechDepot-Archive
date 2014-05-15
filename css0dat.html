@@ -28,13 +28,20 @@ second word if original RCT or AA/CF, third word if LL.<BR>
 directory.<BR>
 3A08..3A0B : high DWord of sum of FileSize of all SC4 files in scenarios
 directory.<BR>
-3A0C..3A1B : 128 bit flags. A bit is reset whenever the scenario becomes
-available. In original RCT, there were only 32 bits of flags - the remaining 12
-bytes are not present.</P>
-<P>There is also a checksum for the last scenario availability flags. it is
+<BR/>
+There are 128 (32 in original) bit flags spread across 4 DWords. A bit is reset whenever the scenario becomes available.<BR/>
+3A0C..3A0F: Bitflags DWord 1<BR/>
+3A10..3A13: Bitflags DWord 2 (not present in original RCT)<BR/> 
+3A14..3A17: Bitflags DWord 3 (not present in original RCT)<BR/>
+3A18..3A1B: Bitflags DWord 4 (not present in original RCT)<BR/>
+<P>There is also a checksum for the last scenario availability flags. It is
 stored as a DWord at 2CA7 (this is in the area for the name of the winner of
 the MegaPark scenario - since it is a &quot;have fun&quot; scenario, it should
-not have a name entered.</P>
+not have a name entered.)<BR/>
+The checksum is: [BitFlags1 <FONT COLOR="#FF0000">xor</FONT> 
+BitFlags2 <FONT COLOR="#FF0000">xor</FONT> 
+BitFlags3 <FONT COLOR="#FF0000">xor</FONT> BitFlags4]
+</P>
 </BODY>
 </HTML>
 
